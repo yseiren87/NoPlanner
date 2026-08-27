@@ -1,0 +1,346 @@
+syntax = "proto3";
+
+package noplanner.evaluation.v1;
+
+import "common/v1/status.proto";
+import "document/v1/document.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "noplanner/backend/proto/dist/golang/evaluation/v1;evaluationv1";
+
+service EvaluationService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+  rpc IdentifyAssumptionsAndRisks(IdentifyAssumptionsAndRisksRequest) returns (AssumptionRiskAnalysis);
+  rpc CreateValidationPlan(CreateValidationPlanRequest) returns (ValidationPlan);
+  rpc RecordValidationResults(RecordValidationResultsRequest) returns (ValidationResultSummary);
+  rpc EvaluatePurposeAlignment(EvaluatePurposeAlignmentRequest) returns (PurposeAlignmentEvaluation);
+  rpc DetectContradictions(DetectContradictionsRequest) returns (ContradictionEvaluation);
+  rpc EvaluateRequirementCompleteness(EvaluateRequirementCompletenessRequest) returns (RequirementCompletenessEvaluation);
+  rpc EvaluateDocumentWorkQuality(EvaluateDocumentWorkQualityRequest) returns (DocumentWorkQualityEvaluation);
+  rpc CompareDocumentVersions(CompareDocumentVersionsRequest) returns (DocumentVersionComparison);
+  rpc Reevaluate(ReevaluateRequest) returns (ReevaluationResult);
+  rpc SubmitObjection(SubmitObjectionRequest) returns (Objection);
+  rpc ReviewObjectionEvidence(ReviewObjectionEvidenceRequest) returns (ObjectionEvidenceReview);
+  rpc GetVerdictHistory(GetVerdictHistoryRequest) returns (VerdictHistory);
+  rpc RecordQualityRun(RecordQualityRunRequest) returns (QualityRun);
+  rpc GetQualityRun(GetQualityRunRequest) returns (QualityRun);
+}
+
+message VersionItem { string id=1; string kind=2; string content=3; uint32 source_block_ordinal=4; noplanner.document.v1.SourceLocation source_location=5; repeated string related_finding_ids=6; }
+enum ChangeKind { CHANGE_KIND_UNSPECIFIED=0; CHANGE_KIND_ADDED=1; CHANGE_KIND_REMOVED=2; CHANGE_KIND_MEANING_CHANGED=3; CHANGE_KIND_EXPRESSION_ONLY=4; CHANGE_KIND_UNCHANGED=5; }
+message ItemChange { string stable_id=1; string item_kind=2; ChangeKind change_kind=3; VersionItem previous=4; VersionItem current=5; repeated string affected_validation_areas=6; repeated string affected_finding_ids=7; bool requires_research=8; string reason=9; }
+message CompareDocumentVersionsRequest { string document_id=1; uint32 previous_version=2; uint32 current_version=3; repeated VersionItem previous_items=4; repeated VersionItem current_items=5; }
+message DocumentVersionComparison { string id=1; string document_id=2; uint32 previous_version=3; uint32 current_version=4; repeated ItemChange changes=5; repeated string affected_validation_areas=6; repeated string affected_finding_ids=7; repeated string research_first_ids=8; google.protobuf.Timestamp created_at=9; }
+
+message FindingSnapshot { string id=1; string area=2; string statement=3; string finding=4; string severity=5; string status=6; repeated string evidence_ids=7; string source_location=8; }
+enum FindingChangeStatus { FINDING_CHANGE_STATUS_UNSPECIFIED=0; FINDING_CHANGE_STATUS_RESOLVED=1; FINDING_CHANGE_STATUS_PARTIALLY_RESOLVED=2; FINDING_CHANGE_STATUS_UNRESOLVED=3; FINDING_CHANGE_STATUS_WORSENED=4; FINDING_CHANGE_STATUS_NEW=5; FINDING_CHANGE_STATUS_WITHDRAWN_BY_EVIDENCE=6; }
+message FindingComparison { string finding_id=1; FindingChangeStatus status=2; FindingSnapshot previous=3; FindingSnapshot current=4; string reason=5; repeated string preserved_evidence_ids=6; }
+message ReevaluateRequest { string previous_evaluation_id=1; string current_evaluation_id=2; DocumentVersionComparison document_comparison=3; repeated FindingSnapshot previous_findings=4; repeated FindingSnapshot current_findings=5; string previous_verdict=6; reserved 7; string criteria_version=8; string model=9; repeated string new_evidence_ids=10; string objection_id=11; string objection_finding_id=12; }
+message ReevaluationResult { string id=1; string previous_evaluation_id=2; string current_evaluation_id=3; repeated FindingComparison findings=4; repeated string rerun_validation_areas=5; repeated string rerun_research_item_ids=6; repeated string preserved_validation_areas=7; string previous_verdict=8; string current_verdict=9; bool verdict_changed=10; repeated string verdict_change_reasons=11; string criteria_version=12; string model=13; google.protobuf.Timestamp created_at=14; }
+
+message ObjectionEvidence { string id=1; string title=2; string url_or_location=3; string applicable_scope=4; string content_hash=5; }
+message SubmitObjectionRequest { string evaluation_id=1; string finding_id=2; string explanation=3; repeated ObjectionEvidence evidence=4; string research_id=5; string verification_status=6; repeated string remaining_uncertainties=7; }
+message Objection { string id=1; string evaluation_id=2; string finding_id=3; string explanation=4; repeated ObjectionEvidence evidence=5; string status=6; string resulting_reevaluation_id=7; google.protobuf.Timestamp created_at=8; string research_id=9; string verification_status=10; repeated string remaining_uncertainties=11; }
+message ReviewObjectionEvidenceRequest { FindingSnapshot finding=1; string explanation=2; repeated ObjectionEvidence evidence=3; }
+message ObjectionEvidenceReview { string status=1; string reason=2; repeated string evidence_ids=3; double confidence=4; }
+message GetVerdictHistoryRequest { string document_id=1; }
+message VerdictChange { string reevaluation_id=1; string previous_evaluation_id=2; string current_evaluation_id=3; string previous_verdict=4; string current_verdict=5; repeated string reasons=6; string criteria_version=7; string model=8; google.protobuf.Timestamp changed_at=9; }
+message VerdictHistory { string document_id=1; repeated VerdictChange changes=2; }
+
+message GoldenCaseResult { string case_id=1; string category=2; uint32 expected_blocking=3; uint32 detected_blocking=4; uint32 true_positive_findings=5; uint32 false_positive_findings=6; uint32 evidence_checks=7; uint32 correct_evidence=8; uint32 citation_checks=9; uint32 correct_citations=10; uint32 verdict_runs=11; uint32 matching_verdicts=12; repeated string exceptions=13; }
+message QualityMetrics { double blocking_recall=1; double finding_precision=2; double evidence_accuracy=3; double citation_accuracy=4; double verdict_consistency=5; }
+message QualityThresholds { double blocking_recall=1; double finding_precision=2; double evidence_accuracy=3; double citation_accuracy=4; double verdict_consistency=5; }
+message QualityMetricDelta { string metric=1; double baseline=2; double current=3; double delta=4; }
+message RecordQualityRunRequest { string dataset_version=1; string model=2; string prompt_version=3; string criteria_version=4; string baseline_run_id=5; repeated GoldenCaseResult cases=6; QualityThresholds thresholds=7; }
+message QualityRun { string id=1; string dataset_version=2; string model=3; string prompt_version=4; string criteria_version=5; string baseline_run_id=6; repeated GoldenCaseResult cases=7; QualityMetrics metrics=8; QualityThresholds thresholds=9; bool release_gate_passed=10; repeated string failures=11; repeated QualityMetricDelta deltas=12; google.protobuf.Timestamp created_at=13; }
+message GetQualityRunRequest { string quality_run_id=1; }
+
+message IdentifyAssumptionsAndRisksRequest {
+  string document_id = 1;
+  uint32 document_version = 2;
+  repeated noplanner.document.v1.DocumentElement elements = 3;
+  repeated noplanner.document.v1.Dependency dependencies = 4;
+}
+
+enum AssumptionCriticality {
+  ASSUMPTION_CRITICALITY_UNSPECIFIED = 0;
+  ASSUMPTION_CRITICALITY_GENERAL = 1;
+  ASSUMPTION_CRITICALITY_CRITICAL = 2;
+}
+
+message Assumption {
+  string id = 1;
+  string statement = 2;
+  AssumptionCriticality criticality = 3;
+  string criticality_reason = 4;
+  string failure_impact = 5;
+  double confidence = 6;
+  uint32 source_block_ordinal = 7;
+  noplanner.document.v1.SourceLocation source_location = 8;
+}
+
+message Risk {
+  string id = 1;
+  string statement = 2;
+  string failure_impact = 3;
+  double likelihood = 4;
+  double impact = 5;
+  double reversibility = 6;
+  double confidence = 7;
+  repeated string assumption_ids = 8;
+  uint32 source_block_ordinal = 9;
+  noplanner.document.v1.SourceLocation source_location = 10;
+}
+
+message AssumptionRiskAnalysis {
+  string id = 1;
+  string document_id = 2;
+  uint32 document_version = 3;
+  repeated Assumption assumptions = 4;
+  repeated Risk risks = 5;
+  string model = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message CreateValidationPlanRequest {
+  string document_id = 1;
+  uint32 document_version = 2;
+  string purpose = 3;
+  string country = 4;
+  string domain = 5;
+  repeated Assumption assumptions = 6;
+  repeated Risk risks = 7;
+  repeated noplanner.document.v1.Dependency dependencies = 8;
+}
+
+enum ValidationArea {
+  VALIDATION_AREA_UNSPECIFIED = 0;
+  VALIDATION_AREA_PURPOSE = 1;
+  VALIDATION_AREA_PROBLEM = 2;
+  VALIDATION_AREA_CONTEXT = 3;
+  VALIDATION_AREA_EVIDENCE = 4;
+  VALIDATION_AREA_DATA = 5;
+  VALIDATION_AREA_API = 6;
+  VALIDATION_AREA_TECHNOLOGY = 7;
+  VALIDATION_AREA_RESOURCE = 8;
+  VALIDATION_AREA_CONSISTENCY = 9;
+  VALIDATION_AREA_COMPLETENESS = 10;
+  VALIDATION_AREA_VERIFIABILITY = 11;
+  VALIDATION_AREA_OPERATIONS = 12;
+}
+
+enum ValidationDepth {
+  VALIDATION_DEPTH_UNSPECIFIED = 0;
+  VALIDATION_DEPTH_NONE = 1;
+  VALIDATION_DEPTH_BASIC = 2;
+  VALIDATION_DEPTH_STANDARD = 3;
+  VALIDATION_DEPTH_DEEP = 4;
+}
+
+message ValidationPlanItem {
+  ValidationArea area = 1;
+  bool selected = 2;
+  ValidationDepth depth = 3;
+  string reason = 4;
+  repeated string driver_ids = 5;
+}
+
+message ValidationPlan {
+  string id = 1;
+  string document_id = 2;
+  uint32 document_version = 3;
+  string purpose = 4;
+  string country = 5;
+  string domain = 6;
+  repeated ValidationPlanItem items = 7;
+  string model = 8;
+  google.protobuf.Timestamp created_at = 9;
+}
+
+enum ValidationStatus {
+  VALIDATION_STATUS_UNSPECIFIED = 0;
+  VALIDATION_STATUS_SATISFIED = 1;
+  VALIDATION_STATUS_PARTIALLY_SATISFIED = 2;
+  VALIDATION_STATUS_NOT_SATISFIED = 3;
+  VALIDATION_STATUS_UNVERIFIED = 4;
+  VALIDATION_STATUS_NOT_APPLICABLE = 5;
+  VALIDATION_STATUS_SKIPPED = 6;
+}
+
+message ValidationResultInput {
+  ValidationArea area = 1;
+  ValidationStatus status = 2;
+  string reason = 3;
+}
+
+message RecordValidationResultsRequest {
+  string validation_plan_id = 1;
+  repeated ValidationResultInput results = 2;
+}
+
+message ValidationResult {
+  ValidationArea area = 1;
+  ValidationStatus status = 2;
+  string reason = 3;
+  bool counted_as_defect = 4;
+  bool included_in_score = 5;
+}
+
+message ValidationResultSummary {
+  string validation_plan_id = 1;
+  repeated ValidationResult results = 2;
+  uint32 defect_count = 3;
+  uint32 scored_count = 4;
+  uint32 excluded_count = 5;
+  double satisfaction_rate = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message EvaluatePurposeAlignmentRequest {
+  string document_id = 1;
+  uint32 document_version = 2;
+  repeated noplanner.document.v1.DocumentElement elements = 3;
+}
+
+enum FindingType {
+  FINDING_TYPE_UNSPECIFIED = 0;
+  FINDING_TYPE_MISSING = 1;
+  FINDING_TYPE_PURPOSELESS_FEATURE = 2;
+  FINDING_TYPE_LOGICAL_GAP = 3;
+  FINDING_TYPE_UNMEASURABLE_GOAL = 4;
+  FINDING_TYPE_CONTRADICTION = 5;
+  FINDING_TYPE_INCOMPLETE_REQUIREMENT = 6;
+}
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_LOW = 1;
+  SEVERITY_MEDIUM = 2;
+  SEVERITY_HIGH = 3;
+  SEVERITY_BLOCKING = 4;
+}
+
+message Finding {
+  string id = 1;
+  ValidationArea area = 2;
+  FindingType type = 3;
+  string statement = 4;
+  string finding = 5;
+  string reasoning_summary = 6;
+  string impact = 7;
+  Severity severity = 8;
+  double confidence = 9;
+  string required_action = 10;
+  repeated uint32 source_block_ordinals = 11;
+  repeated noplanner.document.v1.SourceLocation source_locations = 12;
+  bool document_absence = 13;
+}
+
+message PurposeAlignmentEvaluation {
+  string id = 1;
+  string document_id = 2;
+  uint32 document_version = 3;
+  ValidationStatus status = 4;
+  repeated Finding findings = 5;
+  string model = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message DetectContradictionsRequest {
+  string document_id = 1;
+  uint32 document_version = 2;
+  repeated noplanner.document.v1.DocumentElement elements = 3;
+  repeated noplanner.document.v1.Requirement requirements = 4;
+}
+
+enum ContradictionCategory {
+  CONTRADICTION_CATEGORY_UNSPECIFIED = 0;
+  CONTRADICTION_CATEGORY_CLAIM = 1;
+  CONTRADICTION_CATEGORY_FIGURE = 2;
+  CONTRADICTION_CATEGORY_POLICY = 3;
+  CONTRADICTION_CATEGORY_SCHEDULE = 4;
+  CONTRADICTION_CATEGORY_REQUIREMENT = 5;
+}
+
+message Contradiction {
+  Finding finding = 1;
+  ContradictionCategory category = 2;
+  string first_statement = 3;
+  string second_statement = 4;
+}
+
+message ContradictionEvaluation {
+  string id = 1;
+  string document_id = 2;
+  uint32 document_version = 3;
+  ValidationStatus status = 4;
+  repeated Contradiction contradictions = 5;
+  string model = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message EvaluateRequirementCompletenessRequest {
+  string document_id = 1;
+  uint32 document_version = 2;
+  repeated noplanner.document.v1.Requirement requirements = 3;
+  repeated noplanner.document.v1.Dependency dependencies = 4;
+}
+
+enum RequirementGapCategory {
+  REQUIREMENT_GAP_CATEGORY_UNSPECIFIED = 0;
+  REQUIREMENT_GAP_CATEGORY_NORMAL_FLOW = 1;
+  REQUIREMENT_GAP_CATEGORY_EXCEPTION = 2;
+  REQUIREMENT_GAP_CATEGORY_FAILURE = 3;
+  REQUIREMENT_GAP_CATEGORY_PERMISSION = 4;
+  REQUIREMENT_GAP_CATEGORY_STATE = 5;
+  REQUIREMENT_GAP_CATEGORY_BOUNDARY = 6;
+}
+
+message RequirementGap {
+  Finding finding = 1;
+  RequirementGapCategory category = 2;
+  string missing_decision = 3;
+}
+
+message RequirementCompletenessEvaluation {
+  string id = 1;
+  string document_id = 2;
+  uint32 document_version = 3;
+  ValidationStatus status = 4;
+  repeated RequirementGap gaps = 5;
+  string model = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message EvaluateDocumentWorkQualityRequest {
+  string document_id = 1;
+  uint32 document_version = 2;
+  repeated noplanner.document.v1.DocumentElement elements = 3;
+  repeated noplanner.document.v1.Requirement requirements = 4;
+}
+
+enum WorkQualityDimension {
+  WORK_QUALITY_DIMENSION_UNSPECIFIED = 0;
+  WORK_QUALITY_DIMENSION_RESEARCH = 1;
+  WORK_QUALITY_DIMENSION_VALIDATION = 2;
+  WORK_QUALITY_DIMENSION_LOGIC = 3;
+}
+
+message WorkQualityResult {
+  WorkQualityDimension dimension = 1;
+  ValidationStatus status = 2;
+  string finding = 3;
+  string reasoning_summary = 4;
+  double confidence = 5;
+  repeated uint32 source_block_ordinals = 6;
+  repeated noplanner.document.v1.SourceLocation source_locations = 7;
+}
+
+message DocumentWorkQualityEvaluation {
+  string id = 1;
+  string document_id = 2;
+  uint32 document_version = 3;
+  repeated WorkQualityResult results = 4;
+  string model = 5;
+  google.protobuf.Timestamp created_at = 6;
+}

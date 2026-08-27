@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package noplanner.common.v1;
+
+option go_package = "noplanner/backend/proto/dist/golang/common/v1;commonv1";
+
+message StatusRequest {}
+
+message StatusResponse {
+  string service = 1;
+  string version = 2;
+  string state = 3;
+}

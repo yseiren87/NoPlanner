@@ -1,0 +1,5 @@
+import { createEvaluation, waitForEvaluation, type EvaluationInput } from "@/api/evaluations";
+import type { EvaluationReport } from "@/api/reports";
+export type EvaluationState={status:"idle"|"queued"|"running"|"completed"|"failed";stage:string;report:EvaluationReport|null;error:string|null};
+export class EvaluationStore{state:EvaluationState={status:"idle",stage:"",report:null,error:null};async run(input:EvaluationInput,onStage?:(stage:string)=>void){this.state={status:"queued",stage:"queued",report:null,error:null};onStage?.("queued");try{const job=await createEvaluation(input);const report=await waitForEvaluation(job.id,current=>{this.state={status:current.status==="queued"?"queued":"running",stage:current.stage,report:null,error:null};onStage?.(current.stage)});this.state={status:"completed",stage:"completed",report,error:null};return report}catch(error){this.state={status:"failed",stage:"failed",report:null,error:error instanceof Error?error.message:"평가 실패"};throw error}}}
+export const evaluationStore=new EvaluationStore();

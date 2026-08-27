@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package noplanner.gateway.v1;
+
+import "common/v1/status.proto";
+
+option go_package = "noplanner/backend/proto/dist/golang/gateway/v1;gatewayv1";
+
+service GatewayService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+}

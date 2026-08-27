@@ -1,0 +1,186 @@
+{
+  "version": "golden-v1",
+  "status": "ready",
+  "description": "평가 품질을 반복 측정하기 위한 합성 골든 테스트 데이터셋.",
+  "cases": [
+    {
+      "id": "GOLD-001",
+      "title": "목적과 성공 기준이 명확한 내부 업무 자동화",
+      "category": "normal",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "internal_operations",
+      "document": "문제: 고객 문의 분류에 상담사 1인당 하루 90분이 소요된다. 목적: 반복 분류 시간을 줄여 상담사가 답변 작성에 집중하게 한다. 대상: 국내 고객센터 상담사 40명. 해결책: 기존 문의 분류표를 기준으로 분류 후보를 제시하고 상담사가 확정한다. 성공 기준: 8주 시범 운영에서 분류 시간 중앙값 30% 감소, 오분류율 5% 이하. 데이터: 최근 12개월 문의 18만 건은 사내 보안 승인을 받은 폐쇄 환경에서만 사용한다. 예외: 신뢰도 0.7 미만은 자동 확정하지 않는다.",
+      "expected_verdict": "conditionally_executable",
+      "expected_findings": [
+        {"id":"GOLD-001-F01","area":"data","problem_type":"access_condition","severity":"medium","source_quote":"사내 보안 승인을 받은 폐쇄 환경에서만 사용한다","rationale":"승인 완료 여부와 실제 접근 경로가 명시되지 않았다.","required_action":"보안 승인 주체와 데이터 접근 시험 결과를 첨부한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"문의 데이터 사용 가능성","required_source_types":["internal_policy","access_test"],"must_verify":["access","privacy","retention"]}
+      ]
+    },
+    {
+      "id": "GOLD-002",
+      "title": "국내에 존재하지 않는 이동 데이터 의존 기획",
+      "category": "not_executable",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "mobility",
+      "document": "전 국민의 개인별 실시간 이동 경로를 수집해 10미터 단위의 상권 혼잡도를 예측한다. 데이터는 국내 공공데이터 포털에서 무료로 받을 수 있다고 가정한다. 별도의 개인정보 동의나 통신사 계약은 필요하지 않다. 3개월 안에 전국 서비스를 출시한다.",
+      "expected_verdict": "not_executable",
+      "expected_findings": [
+        {"id":"GOLD-002-F01","area":"data","problem_type":"unavailable_dependency","severity":"blocking","source_quote":"전 국민의 개인별 실시간 이동 경로","rationale":"요구 해상도·범위의 데이터를 공공데이터로 확보할 수 있다는 근거가 없다.","required_action":"공식 데이터 카탈로그의 실제 필드·공간 해상도·제공 범위를 확인한다."},
+        {"id":"GOLD-002-F02","area":"data","problem_type":"permission_gap","severity":"blocking","source_quote":"별도의 개인정보 동의나 통신사 계약은 필요하지 않다","rationale":"개인 단위 이동정보의 적법한 수집·상업 이용 권한을 검토하지 않았다.","required_action":"법적 근거와 공급 계약, 비식별화 기준을 확보한다."},
+        {"id":"GOLD-002-F03","area":"resource","problem_type":"unrealistic_schedule","severity":"high","source_quote":"3개월 안에 전국 서비스를 출시한다","rationale":"데이터 계약·법률 검토·전국 운영 검증을 포함하지 않은 일정이다.","required_action":"선행 조건과 지역 시범 운영을 반영해 일정을 재산정한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"국내 공공 이동 데이터 존재","required_source_types":["official_data_catalog","terms"],"must_verify":["fields","coverage","granularity","commercial_use","cost"]}
+      ]
+    },
+    {
+      "id": "GOLD-003",
+      "title": "존재하지 않는 의료 API 기반 진단 서비스",
+      "category": "not_executable",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "healthcare",
+      "document": "사용자가 증상을 입력하면 국가기관의 실시간 진단 API가 확정 진단명과 처방전을 반환한다. 해당 API는 무료이며 상업 서비스에서 제한 없이 호출할 수 있다. 반환된 처방은 의사 검토 없이 즉시 약국으로 전달한다.",
+      "expected_verdict": "not_executable",
+      "expected_findings": [
+        {"id":"GOLD-003-F01","area":"api","problem_type":"nonexistent_api","severity":"blocking","source_quote":"국가기관의 실시간 진단 API","rationale":"기능·응답 필드·공식 문서가 확인되지 않은 핵심 API에 의존한다.","required_action":"공식 API 문서와 실제 샘플 호출을 확보한다."},
+        {"id":"GOLD-003-F02","area":"context","problem_type":"regulatory_gap","severity":"blocking","source_quote":"의사 검토 없이 즉시 약국으로 전달한다","rationale":"의료행위와 처방 전달에 필요한 국내 규제·책임 체계를 검토하지 않았다.","required_action":"관련 법률과 인허가 및 의료인 개입 조건을 공식 자료로 검토한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"진단·처방 API 기능과 상업 이용","required_source_types":["official_api_documentation","official_terms","law"],"must_verify":["existence","fields","authorization","commercial_use","regulatory_scope"]}
+      ]
+    },
+    {
+      "id": "GOLD-004",
+      "title": "목적 없이 AI 기능만 나열한 서비스",
+      "category": "rewrite_required",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "productivity",
+      "document": "생성형 AI를 적용한다. 챗봇, 문서 요약, 이미지 생성, 음성 변환 기능을 모두 제공한다. 최신 AI를 사용해 경쟁력을 확보한다. 대상 사용자와 해결할 문제, 성공 기준은 개발 중 결정한다.",
+      "expected_verdict": "rewrite_required",
+      "expected_findings": [
+        {"id":"GOLD-004-F01","area":"purpose","problem_type":"missing_purpose","severity":"blocking","source_quote":"대상 사용자와 해결할 문제, 성공 기준은 개발 중 결정한다","rationale":"문제·대상·목표 없이 기술과 기능만 결정했다.","required_action":"우선 사용자 문제와 측정 가능한 결과를 정의한다."},
+        {"id":"GOLD-004-F02","area":"completeness","problem_type":"feature_list_only","severity":"high","source_quote":"챗봇, 문서 요약, 이미지 생성, 음성 변환 기능을 모두 제공한다","rationale":"각 기능이 사용자 문제와 연결되지 않고 범위·우선순위가 없다.","required_action":"목적에 직접 기여하는 최소 기능과 비범위를 정한다."}
+      ],
+      "expected_evidence": []
+    },
+    {
+      "id": "GOLD-005",
+      "title": "문서 내부 수치와 정책이 상충하는 구독 기획",
+      "category": "rewrite_required",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "subscription",
+      "document": "모든 사용자는 월 9,900원을 결제해야 서비스를 이용할 수 있다. 무료 사용자는 하루 10회까지 모든 핵심 기능을 이용할 수 있다. 첫해 목표 유료 사용자는 5만 명이며 매출 목표는 연 30억 원이다. 환불은 결제 후 7일 이내 가능하다. 다른 절에서는 디지털 콘텐츠 특성상 결제 즉시 환불이 불가능하다고 정의한다.",
+      "expected_verdict": "rewrite_required",
+      "expected_findings": [
+        {"id":"GOLD-005-F01","area":"consistency","problem_type":"policy_contradiction","severity":"high","source_quote":"모든 사용자는 월 9,900원을 결제해야 서비스를 이용할 수 있다","rationale":"무료 사용자의 핵심 기능 이용 정책과 직접 충돌한다.","required_action":"무료·유료 자격과 기능 범위를 하나의 정책으로 확정한다."},
+        {"id":"GOLD-005-F02","area":"evidence","problem_type":"numeric_inconsistency","severity":"high","source_quote":"유료 사용자는 5만 명이며 매출 목표는 연 30억 원","rationale":"월 9,900원과 5만 명을 단순 적용한 연 매출과 목표 수치가 일치하지 않는다.","required_action":"가입 시점·해지·할인·세금을 포함한 매출 산식을 제시한다."},
+        {"id":"GOLD-005-F03","area":"consistency","problem_type":"policy_contradiction","severity":"high","source_quote":"결제 후 7일 이내 가능하다","rationale":"결제 즉시 환불 불가 정책과 충돌한다.","required_action":"적용 법률과 상품 제공 시점을 반영한 단일 환불 정책을 정한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"환불 정책의 적법성","required_source_types":["law","official_guidance"],"must_verify":["jurisdiction","digital_content_exception","disclosure"]}
+      ]
+    },
+    {
+      "id": "GOLD-006",
+      "title": "해외 논문 결과를 국내 전체 시장에 직접 적용",
+      "category": "conditionally_executable",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "education",
+      "document": "미국 대학생 120명을 대상으로 한 논문에서 AI 튜터 사용 후 시험 점수가 18% 향상됐다. 따라서 국내 초등학생 전체에게 같은 AI 튜터를 제공하면 성취도가 정확히 18% 상승한다. 첫해 전국 학교 도입을 추진한다.",
+      "expected_verdict": "conditionally_executable",
+      "expected_findings": [
+        {"id":"GOLD-006-F01","area":"evidence","problem_type":"scope_mismatch","severity":"high","source_quote":"국내 초등학생 전체에게 같은 AI 튜터를 제공하면 성취도가 정확히 18% 상승한다","rationale":"국가·연령·교육과정·표본이 다른 연구 결과를 그대로 일반화했다.","required_action":"원 논문의 대상·효과 측정법을 확인하고 국내 초등학생 대상 실험으로 재검증한다."},
+        {"id":"GOLD-006-F02","area":"resource","problem_type":"scale_before_validation","severity":"high","source_quote":"첫해 전국 학교 도입","rationale":"국내 적용 가능성 검증 전에 전국 도입을 전제했다.","required_action":"제한된 학교에서 사전 정의된 지표로 시범 운영한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"시험 점수 18% 향상","required_source_types":["original_paper","independent_replication"],"must_verify":["population","sample_size","effect_definition","limitations","country_applicability"]}
+      ]
+    },
+    {
+      "id": "GOLD-007",
+      "title": "무료 데이터의 상업 이용 조건을 생략한 추천 서비스",
+      "category": "conditionally_executable",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "tourism",
+      "document": "공공 관광 데이터를 무료로 내려받아 유료 여행 추천 서비스의 학습 데이터로 사용한다. 무료 데이터이므로 저장, 가공, AI 학습, 추천 결과 판매와 원문 재배포가 모두 가능하다. 출처 표시는 하지 않는다.",
+      "expected_verdict": "conditionally_executable",
+      "expected_findings": [
+        {"id":"GOLD-007-F01","area":"data","problem_type":"license_unverified","severity":"blocking","source_quote":"무료 데이터이므로 저장, 가공, AI 학습, 추천 결과 판매와 원문 재배포가 모두 가능하다","rationale":"무료 제공과 상업 이용·AI 처리·재배포 허용은 별개의 조건이다.","required_action":"각 데이터셋의 공식 라이선스와 이용약관 원문을 확인한다."},
+        {"id":"GOLD-007-F02","area":"data","problem_type":"attribution_gap","severity":"high","source_quote":"출처 표시는 하지 않는다","rationale":"공공데이터 라이선스의 출처 표시 의무를 검토하지 않았다.","required_action":"표시 의무와 표시 방법을 제품 요구사항에 반영한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"관광 데이터의 상업 이용 가능성","required_source_types":["official_license","official_terms"],"must_verify":["commercial_use","storage","modification","ai_processing","derivatives","redistribution","attribution"]}
+      ]
+    },
+    {
+      "id": "GOLD-008-BEFORE",
+      "title": "수정 전: 배송 예측 데이터와 운영 기준 누락",
+      "category": "before_revision",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "logistics",
+      "revision_pair_id": "PAIR-001",
+      "document": "AI로 배송 도착 시간을 정확히 예측한다. 모든 택배사의 실시간 위치 데이터를 사용한다. 정확하면 바로 전국에 출시한다.",
+      "expected_verdict": "rewrite_required",
+      "expected_findings": [
+        {"id":"PAIR-001-DATA","area":"data","problem_type":"unverified_access","severity":"blocking","source_quote":"모든 택배사의 실시간 위치 데이터","rationale":"공급자·필드·갱신 주기·계약 여부가 없다.","required_action":"확보 가능한 공급자와 데이터 계약을 확인한다."},
+        {"id":"PAIR-001-METRIC","area":"verifiability","problem_type":"undefined_success","severity":"high","source_quote":"정확히 예측한다","rationale":"정확도의 정의와 허용 오차가 없다.","required_action":"평가지표·기준선·허용 오차를 정의한다."},
+        {"id":"PAIR-001-ROLLOUT","area":"operations","problem_type":"missing_rollout_policy","severity":"medium","source_quote":"바로 전국에 출시한다","rationale":"시범 운영과 실패 시 중단 기준이 없다.","required_action":"단계적 출시와 중단 기준을 정한다."}
+      ],
+      "expected_evidence": [
+        {"claim":"택배사 실시간 위치 데이터 접근","required_source_types":["official_api_documentation","contract","sample_call"],"must_verify":["providers","fields","latency","cost","commercial_use"]}
+      ]
+    },
+    {
+      "id": "GOLD-009-AFTER",
+      "title": "수정 후: 배송 예측 범위와 검증 기준 확정",
+      "category": "after_revision",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "logistics",
+      "revision_pair_id": "PAIR-001",
+      "document": "계약을 체결한 A택배사의 수도권 배송 건만 대상으로 한다. 공식 API 샘플 호출에서 차량 위치, 집하 시각과 배송 상태 필드를 확인했으며 갱신 주기는 5분이다. 8주간 2개 허브에서 검증하고 기존 안내 대비 평균절대오차를 20% 줄이며 90%의 배송 건에서 오차 30분 이하를 목표로 한다. 목표 미달 또는 API 누락률 3% 초과 시 확대하지 않는다. 데이터의 상업 이용과 30일 저장은 계약서 조항 확인이 남아 있다.",
+      "expected_verdict": "conditionally_executable",
+      "expected_findings": [
+        {"id":"PAIR-001-DATA","area":"data","problem_type":"license_unverified","severity":"blocking","source_quote":"상업 이용과 30일 저장은 계약서 조항 확인이 남아 있다","rationale":"접근 가능성은 확인했지만 상업 이용과 저장 권한은 미확인이다.","required_action":"계약서 원문에서 상업 이용과 보존 기간을 확인한다."}
+      ],
+      "expected_resolved_finding_ids": ["PAIR-001-METRIC","PAIR-001-ROLLOUT"],
+      "expected_evidence": [
+        {"claim":"A택배사 데이터 이용 조건","required_source_types":["official_api_documentation","contract","sample_call"],"must_verify":["fields","latency","commercial_use","retention"]}
+      ]
+    },
+    {
+      "id": "GOLD-010",
+      "title": "근거와 운영 계획이 충분한 제한적 사내 검색",
+      "category": "normal",
+      "source_kind": "synthetic",
+      "expert_review_status": "not_required",
+      "country": "KR",
+      "domain": "enterprise_search",
+      "document": "대상은 기술지원팀 25명이며 흩어진 승인 문서를 찾는 평균 12분의 시간을 줄이는 것이 목적이다. 보안팀이 승인한 사내 문서 4,200건만 색인하고 원본 접근 권한을 검색 결과에도 그대로 적용한다. 6주 시범 운영에서 검색 성공률 70% 이상, 평균 탐색 시간 40% 감소, 권한 밖 문서 노출 0건을 기준으로 한다. 답변에는 문서 링크와 문단 위치를 표시하고 근거가 없으면 답변하지 않는다. 로그는 문서 본문 없이 사용자 ID, 문서 ID와 판정만 30일 보관한다.",
+      "expected_verdict": "executable",
+      "expected_findings": [],
+      "expected_evidence": [
+        {"claim":"문서 접근 및 로그 보존 정책","required_source_types":["internal_policy","access_test"],"must_verify":["authorization_inheritance","retention","audit"]}
+      ]
+    }
+  ]
+}

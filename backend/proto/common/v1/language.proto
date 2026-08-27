@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package noplanner.common.v1;
+
+option go_package = "noplanner/backend/proto/dist/golang/common/v1;commonv1";
+
+enum OutputLanguage {
+  OUTPUT_LANGUAGE_UNSPECIFIED = 0;
+  OUTPUT_LANGUAGE_KOREAN = 1;
+  OUTPUT_LANGUAGE_ENGLISH = 2;
+}

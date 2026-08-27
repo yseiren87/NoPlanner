@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package noplanner.research.v1;
+
+import "common/v1/status.proto";
+
+option go_package = "noplanner/backend/proto/dist/golang/research/v1;researchv1";
+
+service ResearchService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+  rpc PlanResearch(PlanResearchRequest) returns (ResearchPlan);
+  rpc ExecuteResearch(ExecuteResearchRequest) returns (ResearchReport);
+  rpc VerifySources(VerifySourcesRequest) returns (ResearchReport);
+  rpc GetResearch(GetResearchRequest) returns (ResearchReport);
+}
+
+message Assumption {
+  string id = 1;
+  string statement = 2;
+  string failure_impact = 3;
+  double blocking_likelihood = 4;
+  repeated string dependency_types = 5;
+}
+
+message ResearchLimit {
+  uint32 max_queries = 1;
+  uint32 max_sources = 2;
+  uint32 max_seconds = 3;
+  double max_cost = 4;
+  uint32 saturation_queries = 5;
+}
+
+message PlanResearchRequest {
+  string evaluation_id = 1;
+  string target_country = 2;
+  string target_domain = 3;
+  repeated Assumption assumptions = 4;
+  ResearchLimit limit = 5;
+}
+
+message ResearchTask {
+  string id = 1;
+  string assumption_id = 2;
+  string question = 3;
+  repeated string required_source_types = 4;
+  string depth = 5;
+  uint32 priority = 6;
+  repeated string queries = 7;
+  string verification_type = 8;
+}
+
+message ResearchPlan {
+  string id = 1;
+  string evaluation_id = 2;
+  repeated ResearchTask tasks = 3;
+  ResearchLimit limit = 4;
+  string target_country = 5;
+  string target_domain = 6;
+}
+
+message ExecuteResearchRequest { ResearchPlan plan = 1; }
+message SourceReference { string id=1; string title=2; string url=3; string applicable_scope=4; }
+message VerifySourcesRequest { string evaluation_id=1; string target_country=2; string target_domain=3; repeated SourceReference sources=4; }
+message GetResearchRequest { string research_id = 1; }
+
+message SourceEvidence {
+  string id = 1;
+  string task_id = 2;
+  string title = 3;
+  string publisher = 4;
+  string source_type = 5;
+  string url = 6;
+  string original_url = 7;
+  string published_at = 8;
+  string verified_at = 9;
+  string target_country = 10;
+  string target_domain = 11;
+  string applicable_scope = 12;
+  string source_location = 13;
+  string excerpt = 14;
+  string relation = 15;
+  string reliability_grade = 16;
+  string access_status = 17;
+  string pricing_status = 18;
+  string commercial_use_status = 19;
+  string license_or_terms_url = 20;
+  repeated string usage_restrictions = 21;
+  repeated string limitations = 22;
+  string content_hash = 23;
+  bool official_source = 24;
+  bool sample_call_verified = 25;
+}
+
+message VerificationResult {
+  string task_id = 1;
+  string assumption_id = 2;
+  string verification_type = 3;
+  string status = 4;
+  string conclusion = 5;
+  repeated string evidence_ids = 6;
+  repeated string conflicting_evidence_ids = 7;
+  repeated string dimension_results = 8;
+  repeated string remaining_uncertainties = 9;
+}
+
+message SearchTrace {
+  string query = 1;
+  repeated string result_urls = 2;
+  repeated string visited_urls = 3;
+}
+
+message ResearchReport {
+  string id = 1;
+  string plan_id = 2;
+  string evaluation_id = 3;
+  string status = 4;
+  repeated SearchTrace search_traces = 5;
+  repeated SourceEvidence evidence = 6;
+  repeated VerificationResult results = 7;
+  uint32 queries_used = 8;
+  uint32 sources_used = 9;
+  uint32 elapsed_seconds = 10;
+  double estimated_cost = 11;
+  repeated string limit_reasons = 12;
+  repeated string remaining_uncertainties = 13;
+}

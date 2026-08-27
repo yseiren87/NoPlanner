@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package noplanner.common.v1;
+
+import "common/v1/error.proto";
+
+option go_package = "noplanner/backend/proto/dist/golang/common/v1;commonv1";
+
+enum OperationState {
+  OPERATION_STATE_UNSPECIFIED = 0;
+  OPERATION_STATE_QUEUED = 1;
+  OPERATION_STATE_RUNNING = 2;
+  OPERATION_STATE_SUCCEEDED = 3;
+  OPERATION_STATE_FAILED = 4;
+  OPERATION_STATE_CANCELED = 5;
+  OPERATION_STATE_RETRYING = 6;
+}
+
+message OperationProgress {
+  string operation_id = 1;
+  string evaluation_id = 2;
+  OperationState state = 3;
+  string stage = 4;
+  uint32 completed_steps = 5;
+  uint32 total_steps = 6;
+  ErrorDetail failure = 7;
+}

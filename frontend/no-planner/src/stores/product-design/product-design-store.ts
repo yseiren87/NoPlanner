@@ -1,0 +1,4 @@
+import { getProductDesign, type ProductDesign } from "@/api/product-designs";
+export type ProductDesignState={design:ProductDesign|null;loading:boolean;error:string|null};
+export class ProductDesignStore{state:ProductDesignState={design:null,loading:false,error:null};listeners=new Set<()=>void>();subscribe=(listener:()=>void)=>{this.listeners.add(listener);return()=>this.listeners.delete(listener)};snapshot=()=>this.state;async load(id:string){this.state={...this.state,loading:true,error:null};this.emit();try{this.state={design:await getProductDesign(id),loading:false,error:null}}catch(error){this.state={...this.state,loading:false,error:error instanceof Error?error.message:"오류가 발생했습니다."}}this.emit()}private emit(){this.listeners.forEach(listener=>listener())}}
+export const productDesignStore=new ProductDesignStore();

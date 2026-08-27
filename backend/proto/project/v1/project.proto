@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package noplanner.project.v1;
+
+import "common/v1/status.proto";
+import "common/v1/language.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "noplanner/backend/proto/dist/golang/project/v1;projectv1";
+
+service ProjectService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+  rpc CreateProject(CreateProjectRequest) returns (Project);
+  rpc ListProjects(ListProjectsRequest) returns (ProjectList);
+  rpc GetProject(GetProjectRequest) returns (Project);
+  rpc UpdateProject(UpdateProjectRequest) returns (Project);
+  rpc SetProjectMemberRole(SetProjectMemberRoleRequest) returns (ProjectMember);
+  rpc UpdateOutputLanguage(UpdateOutputLanguageRequest) returns (Project);
+}
+
+enum ProjectRole {
+  PROJECT_ROLE_UNSPECIFIED = 0;
+  PROJECT_ROLE_OWNER = 1;
+  PROJECT_ROLE_EDITOR = 2;
+  PROJECT_ROLE_VIEWER = 3;
+}
+
+message Project {
+  string id = 1;
+  string name = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  ProjectRole caller_role = 5;
+  noplanner.common.v1.OutputLanguage output_language = 6;
+}
+
+message UpdateOutputLanguageRequest {
+  string project_id = 1;
+  noplanner.common.v1.OutputLanguage output_language = 2;
+}
+
+message ProjectMember {
+  string project_id = 1;
+  string subject = 2;
+  ProjectRole role = 3;
+}
+
+message CreateProjectRequest {
+  string name = 1;
+}
+message ListProjectsRequest {}
+message ProjectList { repeated Project projects = 1; }
+
+message GetProjectRequest {
+  string project_id = 1;
+}
+
+message UpdateProjectRequest {
+  string project_id = 1;
+  string name = 2;
+}
+
+message SetProjectMemberRoleRequest {
+  string project_id = 1;
+  string subject = 2;
+  ProjectRole role = 3;
+}

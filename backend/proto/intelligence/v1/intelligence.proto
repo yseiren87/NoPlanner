@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package noplanner.intelligence.v1;
+
+option go_package = "noplanner/backend/proto/dist/golang/intelligence/v1;intelligencev1";
+
+import "common/v1/status.proto";
+
+service IntelligenceService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+  rpc Generate(GenerateRequest) returns (GenerateResponse);
+  rpc SearchWeb(SearchWebRequest) returns (SearchWebResponse);
+}
+
+message GenerateRequest {
+  string prompt = 1;
+  bool json_response = 2;
+  uint32 max_tokens = 3;
+}
+
+message GenerateResponse {
+  string text = 1;
+  string provider = 2;
+  string model = 3;
+}
+
+message SearchWebRequest {
+  string query = 1;
+}
+
+message SearchWebResponse {
+  repeated WebSource sources = 1;
+  repeated string executed_queries = 2;
+  string provider = 3;
+  string model = 4;
+}
+
+message WebSource {
+  string title = 1;
+  string url = 2;
+  string snippet = 3;
+  string publisher = 4;
+}

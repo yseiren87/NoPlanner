@@ -1,0 +1,181 @@
+syntax = "proto3";
+
+package noplanner.document.v1;
+
+import "common/v1/status.proto";
+import "common/v1/language.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "noplanner/backend/proto/dist/golang/document/v1;documentv1";
+
+service DocumentService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+  rpc CreateDocument(CreateDocumentRequest) returns (DocumentVersion);
+  rpc AddDocumentVersion(AddDocumentVersionRequest) returns (DocumentVersion);
+  rpc GetDocumentVersion(GetDocumentVersionRequest) returns (DocumentVersion);
+  rpc ListDocumentVersions(ListDocumentVersionsRequest) returns (ListDocumentVersionsResponse);
+  rpc CreateDocumentFromUrl(CreateDocumentFromUrlRequest) returns (DocumentVersion);
+  rpc AnalyzeDocumentVersion(AnalyzeDocumentVersionRequest) returns (AnalyzeDocumentVersionResponse);
+  rpc AnalyzeRequirements(AnalyzeDocumentVersionRequest) returns (AnalyzeRequirementsResponse);
+}
+
+message DocumentVersion {
+  string document_id = 1;
+  string project_id = 2;
+  uint32 version = 3;
+  string file_name = 4;
+  string media_type = 5;
+  int64 size_bytes = 6;
+  string sha256 = 7;
+  google.protobuf.Timestamp created_at = 8;
+  bytes original = 9;
+  string extracted_text = 10;
+  repeated DocumentBlock blocks = 11;
+  string source_url = 12;
+  ParseStatus parse_status = 13;
+  repeated ParseIssue parse_issues = 14;
+}
+
+enum ParseStatus {
+  PARSE_STATUS_UNSPECIFIED = 0;
+  PARSE_STATUS_COMPLETE = 1;
+  PARSE_STATUS_PARTIAL = 2;
+}
+
+message ParseIssue {
+  string scope = 1;
+  string message = 2;
+}
+
+enum DocumentBlockType {
+  DOCUMENT_BLOCK_TYPE_UNSPECIFIED = 0;
+  DOCUMENT_BLOCK_TYPE_HEADING = 1;
+  DOCUMENT_BLOCK_TYPE_PARAGRAPH = 2;
+  DOCUMENT_BLOCK_TYPE_PAGE = 3;
+  DOCUMENT_BLOCK_TYPE_SLIDE = 4;
+  DOCUMENT_BLOCK_TYPE_SHEET = 5;
+  DOCUMENT_BLOCK_TYPE_IMAGE_OCR = 6;
+  DOCUMENT_BLOCK_TYPE_WEB_SECTION = 7;
+}
+
+message DocumentBlock {
+  DocumentBlockType type = 1;
+  string text = 2;
+  uint32 ordinal = 3;
+  uint32 heading_level = 4;
+  SourceLocation location = 5;
+}
+
+message SourceLocation {
+  uint32 page_number = 1;
+  uint32 slide_number = 2;
+  string sheet_name = 3;
+  repeated string section_path = 4;
+  uint32 paragraph_number = 5;
+}
+
+message CreateDocumentRequest {
+  string project_id = 1;
+  string file_name = 2;
+  string media_type = 3;
+  bytes original = 4;
+}
+
+message AddDocumentVersionRequest {
+  string document_id = 1;
+  string file_name = 2;
+  string media_type = 3;
+  bytes original = 4;
+}
+
+message GetDocumentVersionRequest {
+  string document_id = 1;
+  uint32 version = 2;
+}
+
+message ListDocumentVersionsRequest {
+  string document_id = 1;
+}
+
+message ListDocumentVersionsResponse {
+  repeated DocumentVersion versions = 1;
+}
+
+message CreateDocumentFromUrlRequest {
+  string project_id = 1;
+  string url = 2;
+}
+
+enum DocumentElementType {
+  DOCUMENT_ELEMENT_TYPE_UNSPECIFIED = 0;
+  DOCUMENT_ELEMENT_TYPE_PROBLEM = 1;
+  DOCUMENT_ELEMENT_TYPE_PURPOSE = 2;
+  DOCUMENT_ELEMENT_TYPE_GOAL = 3;
+  DOCUMENT_ELEMENT_TYPE_TARGET = 4;
+  DOCUMENT_ELEMENT_TYPE_CLAIM = 5;
+  DOCUMENT_ELEMENT_TYPE_EVIDENCE = 6;
+  DOCUMENT_ELEMENT_TYPE_ASSUMPTION = 7;
+  DOCUMENT_ELEMENT_TYPE_SOLUTION = 8;
+}
+
+message DocumentElement {
+  string id = 1;
+  DocumentElementType type = 2;
+  string content = 3;
+  double confidence = 4;
+  uint32 source_block_ordinal = 5;
+  SourceLocation source_location = 6;
+}
+
+message AnalyzeDocumentVersionRequest {
+  string document_id = 1;
+  uint32 version = 2;
+  noplanner.common.v1.OutputLanguage output_language = 3;
+}
+
+message AnalyzeDocumentVersionResponse {
+  repeated DocumentElement elements = 1;
+  string model = 2;
+}
+
+enum RequirementType {
+  REQUIREMENT_TYPE_UNSPECIFIED = 0;
+  REQUIREMENT_TYPE_REQUIREMENT = 1;
+  REQUIREMENT_TYPE_POLICY = 2;
+  REQUIREMENT_TYPE_STATE = 3;
+  REQUIREMENT_TYPE_EXCEPTION = 4;
+}
+
+enum DependencyType {
+  DEPENDENCY_TYPE_UNSPECIFIED = 0;
+  DEPENDENCY_TYPE_DATA = 1;
+  DEPENDENCY_TYPE_API = 2;
+  DEPENDENCY_TYPE_TECHNOLOGY = 3;
+  DEPENDENCY_TYPE_PERMISSION = 4;
+  DEPENDENCY_TYPE_RESOURCE = 5;
+}
+
+message Requirement {
+  string id = 1;
+  RequirementType type = 2;
+  string content = 3;
+  double confidence = 4;
+  uint32 source_block_ordinal = 5;
+  SourceLocation source_location = 6;
+}
+
+message Dependency {
+  string id = 1;
+  DependencyType type = 2;
+  string content = 3;
+  double confidence = 4;
+  uint32 source_block_ordinal = 5;
+  SourceLocation source_location = 6;
+  repeated string requirement_ids = 7;
+}
+
+message AnalyzeRequirementsResponse {
+  repeated Requirement requirements = 1;
+  repeated Dependency dependencies = 2;
+  string model = 3;
+}

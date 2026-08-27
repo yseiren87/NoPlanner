@@ -1,0 +1,139 @@
+syntax = "proto3";
+package noplanner.generation.v1;
+import "common/v1/status.proto";
+import "google/protobuf/timestamp.proto";
+option go_package = "noplanner/backend/proto/dist/golang/generation/v1;generationv1";
+
+service GenerationService {
+  rpc GetStatus(noplanner.common.v1.StatusRequest) returns (noplanner.common.v1.StatusResponse);
+  rpc CreateReport(CreateReportRequest) returns (EvaluationReport);
+  rpc GetReport(GetReportRequest) returns (EvaluationReport);
+  rpc ExportReport(ExportReportRequest) returns (ExportReportResponse);
+  rpc CreateImprovementPlan(CreateImprovementPlanRequest) returns (ImprovementPlan);
+  rpc ImproveExistingPlan(ImproveExistingPlanRequest) returns (ImprovedPlan);
+  rpc DiscoverPlanningQuestions(DiscoverPlanningQuestionsRequest) returns (PlanningQuestionSet);
+  rpc GenerateAutonomousPlan(GenerateAutonomousPlanRequest) returns (AutonomousPlan);
+  rpc GetAutonomousPlan(GetAutonomousPlanRequest) returns (AutonomousPlan);
+  rpc GenerateProductDesign(GenerateProductDesignRequest) returns (ProductDesign);
+  rpc GetProductDesign(GetProductDesignRequest) returns (ProductDesign);
+  rpc AnalyzeRepository(AnalyzeRepositoryRequest) returns (RepositoryAnalysis);
+  rpc CompareImplementation(CompareImplementationRequest) returns (ImplementationReview);
+  rpc CreateImplementationProposal(CreateImplementationProposalRequest) returns (ImplementationProposal);
+  rpc ListConnectors(ListConnectorsRequest) returns (ConnectorCatalog);
+  rpc DeliverIntegration(DeliverIntegrationRequest) returns (IntegrationDelivery);
+  rpc GetImplementationHistory(GetImplementationHistoryRequest) returns (ImplementationHistory);
+}
+
+enum Verdict { VERDICT_UNSPECIFIED=0; VERDICT_EXECUTABLE=1; VERDICT_CONDITIONALLY_EXECUTABLE=2; VERDICT_REWRITE_REQUIRED=3; VERDICT_NOT_EXECUTABLE=4; }
+enum Severity { SEVERITY_UNSPECIFIED=0; SEVERITY_LOW=1; SEVERITY_MEDIUM=2; SEVERITY_HIGH=3; SEVERITY_BLOCKING=4; }
+enum Confidence { CONFIDENCE_UNSPECIFIED=0; CONFIDENCE_LOW=1; CONFIDENCE_MEDIUM=2; CONFIDENCE_HIGH=3; }
+enum EvaluationStatus { EVALUATION_STATUS_UNSPECIFIED=0; EVALUATION_STATUS_QUEUED=1; EVALUATION_STATUS_ANALYZING=2; EVALUATION_STATUS_PLANNING_RESEARCH=3; EVALUATION_STATUS_RESEARCHING=4; EVALUATION_STATUS_VALIDATING=5; EVALUATION_STATUS_REVIEWING=6; EVALUATION_STATUS_COMPLETED=7; EVALUATION_STATUS_LIMITED=8; }
+
+message EvidenceLink { string id=1; string title=2; string url=3; string source_location=4; string grade=5; string relation=6; }
+message FindingInput { string id=1; string area=2; string problem_type=3; string source_document=4; string source_location=5; string statement=6; string finding=7; repeated EvidenceLink evidence=8; string reasoning_summary=9; string impact=10; double likelihood=11; double impact_score=12; double recovery_cost=13; double reversibility=14; string required_action=15; string verification_method=16; string status=17; bool critical_assumption=18; bool confirmed_false=19; }
+message Finding { FindingInput detail=1; Severity severity=2; Confidence confidence=3; }
+message AreaResult { string area=1; string status=2; string reason=3; uint32 finding_count=4; Confidence confidence=5; }
+message AssumptionResult { string id=1; string statement=2; string status=3; repeated string dependencies=4; repeated string evidence_ids=5; }
+message Contradiction { string id=1; string first_location=2; string first_statement=3; string second_location=4; string second_statement=5; string reason=6; }
+message ResearchResult { string question=1; string conclusion=2; repeated EvidenceLink sources=3; repeated EvidenceLink conflicts=4; repeated string uncertainties=5; }
+message PlanSummary { string problem=1; string purpose=2; string target_user=3; string environment=4; string solution=5; string success_criteria=6; }
+message ProgressStep { string code=1; string label=2; string status=3; string reason=4; }
+
+message CreateReportRequest { string evaluation_id=1; string project_name=2; string document_name=3; uint32 document_version=4; string country=5; string domain=6; string target_user=7; string criteria_version=8; string model=9; PlanSummary summary=10; repeated FindingInput findings=11; repeated AreaResult areas=12; repeated AssumptionResult assumptions=13; repeated Contradiction contradictions=14; repeated ResearchResult research=15; repeated string limitations=16; repeated ProgressStep progress=17; EvaluationStatus evaluation_status=18; string document_id=19; string project_id=20; string owner_subject=21; }
+message EvaluationReport { string id=1; string evaluation_id=2; string project_name=3; string document_name=4; uint32 document_version=5; string country=6; string domain=7; string target_user=8; string criteria_version=9; string model=10; google.protobuf.Timestamp created_at=11; Verdict verdict=12; Confidence confidence=13; string conclusion=14; bool implementation_may_start=15; repeated Finding findings=16; repeated AreaResult areas=17; repeated AssumptionResult assumptions=18; repeated Contradiction contradictions=19; repeated ResearchResult research=20; repeated string required_actions=21; repeated string recommendations=22; repeated string verdict_change_conditions=23; repeated string limitations=24; PlanSummary summary=25; repeated ProgressStep progress=26; EvaluationStatus evaluation_status=27; string document_id=28; string project_id=29; string owner_subject=30; }
+message GetReportRequest { string report_id=1; }
+enum ExportFormat { EXPORT_FORMAT_UNSPECIFIED=0; EXPORT_FORMAT_MARKDOWN=1; EXPORT_FORMAT_PDF=2; EXPORT_FORMAT_DOCX=3; EXPORT_FORMAT_JSON=4; }
+message ExportReportRequest { string report_id=1; ExportFormat format=2; }
+message ExportReportResponse { bytes content=1; string content_type=2; string filename=3; }
+
+message ImprovementTask {
+  string id=1;
+  repeated string finding_ids=2;
+  uint32 order=3;
+  string action=4;
+  repeated string required_research=5;
+  string verification_method=6;
+  bool blocking=7;
+}
+message CreateImprovementPlanRequest { string evaluation_id=1; repeated Finding findings=2; }
+message ImprovementPlan { string id=1; string evaluation_id=2; repeated ImprovementTask tasks=3; }
+
+message GroundedClaim { string statement=1; repeated string evidence_ids=2; bool verified=3; repeated string finding_ids=4; }
+message PlanSection { string key=1; string title=2; string content=3; repeated string source_finding_ids=4; repeated string evidence_ids=5; }
+message PlanChange { string section_key=1; repeated string finding_ids=2; string before=3; string after=4; string reason=5; }
+message ImproveExistingPlanRequest {
+  string original_intent=1;
+  repeated PlanSection original_sections=2;
+  ImprovementPlan improvement_plan=3;
+  repeated GroundedClaim claims=4;
+}
+message ImprovedPlan {
+  string id=1;
+  string preserved_intent=2;
+  repeated PlanSection sections=3;
+  repeated PlanChange changes=4;
+  repeated string unresolved_finding_ids=5;
+}
+
+message PlanningContext { string purpose=1; string target_user=2; string environment=3; repeated string constraints=4; }
+message PlanningQuestion { string id=1; string field=2; string question=3; string reason=4; }
+message DiscoverPlanningQuestionsRequest { string idea=1; PlanningContext known_context=2; }
+message PlanningQuestionSet { string idea=1; repeated PlanningQuestion questions=2; bool ready_to_plan=3; }
+
+message ResearchFact { string id=1; string question=2; string conclusion=3; repeated EvidenceLink evidence=4; bool verified=5; repeated string uncertainties=6; }
+message SolutionAlternative { string id=1; string name=2; string description=3; repeated string evidence_ids=4; repeated string advantages=5; repeated string disadvantages=6; bool selected=7; string decision_reason=8; }
+message ExecutionRequirement { string id=1; string statement=2; string acceptance_criteria=3; repeated string evidence_ids=4; }
+message GeneratedSpecification {
+  string problem=1; string purpose=2; string target_user=3; string scope=4; string out_of_scope=5;
+  repeated string user_flow=6; repeated string policies=7; repeated ExecutionRequirement requirements=8;
+  repeated string success_criteria=9; repeated string assumptions=10;
+}
+message SelfEvaluation { Verdict verdict=1; repeated Finding findings=2; repeated string unresolved_blockers=3; }
+message GenerateAutonomousPlanRequest {
+  string idea=1; PlanningContext context=2; repeated ResearchFact research=3;
+  repeated SolutionAlternative alternatives=4; string criteria_version=5; string model=6; string owner_subject=7;
+}
+message AutonomousPlan {
+  string id=1; string idea=2; PlanningContext context=3; repeated ResearchFact research=4;
+  repeated SolutionAlternative alternatives=5; GeneratedSpecification specification=6;
+  SelfEvaluation self_evaluation=7; repeated string trace_ids=8; google.protobuf.Timestamp created_at=9; string owner_subject=10;
+}
+message GetAutonomousPlanRequest { string plan_id=1; }
+
+enum UIStateKind { UI_STATE_KIND_UNSPECIFIED=0; UI_STATE_KIND_NORMAL=1; UI_STATE_KIND_LOADING=2; UI_STATE_KIND_EMPTY=3; UI_STATE_KIND_ERROR=4; UI_STATE_KIND_FORBIDDEN=5; }
+message ExperienceGoal { string id=1; string requirement_id=2; string user=3; string goal=4; string success_signal=5; }
+message JourneyStep { string id=1; string goal_id=2; string requirement_id=3; string user_action=4; string system_response=5; string next_step_id=6; }
+message InformationNode { string id=1; string label=2; string parent_id=3; repeated string requirement_ids=4; }
+message UIState { UIStateKind kind=1; string presentation=2; repeated string available_actions=3; }
+message ScreenAction { string id=1; string label=2; string result_screen_id=3; string requirement_id=4; }
+message ScreenSpecification { string id=1; string name=2; string purpose=3; repeated string requirement_ids=4; repeated string data_fields=5; repeated ScreenAction actions=6; repeated UIState states=7; }
+message DesignFinding { string id=1; string area=2; string severity=3; string finding=4; string correction=5; string status=6; repeated string screen_ids=7; repeated string requirement_ids=8; }
+message CodeFileChange { string path=1; string action=2; string content=3; repeated string requirement_ids=4; repeated string screen_ids=5; }
+message UIChangeSet { string id=1; string base_revision=2; string branch_name=3; string stack=4; repeated CodeFileChange files=5; }
+message ValidationCheck { string id=1; string kind=2; string status=3; string command_or_viewport=4; string detail=5; repeated string screen_ids=6; }
+message TraceLink { string requirement_id=1; repeated string goal_ids=2; repeated string journey_step_ids=3; repeated string screen_ids=4; repeated string file_paths=5; }
+message DesignRequirement { string id=1; string statement=2; string acceptance_criteria=3; }
+message GenerateProductDesignRequest { string plan_id=1; string base_revision=2; repeated DesignRequirement requirements=3; repeated string user_flows=4; repeated ValidationCheck validation_results=5; string owner_subject=6; }
+message ProductDesign { string id=1; string plan_id=2; repeated ExperienceGoal goals=3; repeated JourneyStep journey=4; repeated InformationNode information_architecture=5; repeated ScreenSpecification screens=6; repeated DesignFinding findings=7; UIChangeSet change_set=8; repeated ValidationCheck validations=9; repeated TraceLink traceability=10; bool executable=11; repeated string blockers=12; string owner_subject=13; }
+message GetProductDesignRequest { string design_id=1; }
+
+message RepositoryFile { string path=1; string language=2; uint64 size=3; repeated string symbols=4; string content_hash=5; }
+message CommitSummary { string revision=1; string author=2; string committed_at=3; string subject=4; }
+message AnalyzeRepositoryRequest { string project_id=1; string repository_path=2; repeated string include_paths=3; uint32 history_limit=4; }
+message RepositoryAnalysis { string id=1; string project_id=2; string repository_root=3; string revision=4; repeated RepositoryFile files=5; repeated CommitSummary history=6; repeated string detected_features=7; bool read_only=8; }
+message ImplementationExpectation { string requirement_id=1; string statement=2; string acceptance_criteria=3; repeated string expected_paths=4; repeated string expected_test_paths=5; }
+message ImplementationMismatch { string id=1; string requirement_id=2; string kind=3; string plan_location=4; repeated string code_locations=5; string finding=6; string required_change=7; string status=8; }
+message CompareImplementationRequest { string evaluation_id=1; RepositoryAnalysis repository=2; repeated ImplementationExpectation expectations=3; }
+message ImplementationReview { string id=1; string evaluation_id=2; string repository_revision=3; repeated ImplementationMismatch mismatches=4; repeated string satisfied_requirement_ids=5; string project_id=6; string repository_root=7; }
+message ProposedFilePatch { string path=1; string unified_diff=2; repeated string mismatch_ids=3; repeated string requirement_ids=4; }
+message CreateImplementationProposalRequest { ImplementationReview review=1; string base_revision=2; repeated ProposedFilePatch patches=3; string actor_id=4; }
+message ImplementationProposal { string id=1; string review_id=2; string base_revision=3; string proposed_branch=4; repeated ProposedFilePatch patches=5; bool working_tree_modified=6; }
+enum ConnectorCapability { CONNECTOR_CAPABILITY_UNSPECIFIED=0; CONNECTOR_CAPABILITY_READ_INTERNAL_DOCUMENTS=1; CONNECTOR_CAPABILITY_WRITE_WORK_ITEM=2; CONNECTOR_CAPABILITY_SEND_MESSAGE=3; }
+message ListConnectorsRequest {}
+message ConnectorStatus { string name=1; bool enabled=2; repeated ConnectorCapability capabilities=3; string disabled_reason=4; }
+message ConnectorCatalog { repeated ConnectorStatus connectors=1; }
+message DeliverIntegrationRequest { string actor_id=1; string connector=2; string target=3; string payload=4; string project_id=5; string trace_id=6; string approval_id=7; }
+message IntegrationDelivery { string id=1; string connector=2; string target=3; string status=4; bool approval_required=5; string audit_id=6; string external_reference=7; }
+message GetImplementationHistoryRequest { string project_id=1; }
+message ImplementationHistoryItem { string id=1; string kind=2; string source_id=3; string result_id=4; string revision=5; string actor_id=6; string target=7; string status=8; string payload_hash=9; google.protobuf.Timestamp created_at=10; }
+message ImplementationHistory { string project_id=1; repeated ImplementationHistoryItem items=2; }
