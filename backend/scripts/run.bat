@@ -4,11 +4,7 @@ rem The service owns RUN_COMMAND; this runner does not infer a language/runtime.
 set "PLATFORM_DIR=%~dp0.."
 cd /d "%PLATFORM_DIR%"
 
-if "%~1"=="" (
-  echo service name is required
-  echo usage: scripts\run.bat ^<service^> [args...]
-  exit /b 1
-)
+if "%~1"=="" goto run_all
 
 set "NAME=%~1"
 shift
@@ -59,6 +55,10 @@ if not defined RUN_COMMAND (
 
 echo [%NAME%] command: !RUN_COMMAND!
 call !RUN_COMMAND! %*
+exit /b %ERRORLEVEL%
+
+:run_all
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0run.ps1"
 exit /b %ERRORLEVEL%
 
 :kill_by_port

@@ -21,10 +21,11 @@ mobile-app/
   {app_name}/
     lib/
       main.dart, router.dart       # entry
-      providers/{feature}_*.dart   # flow
-      api/{feature}_api.dart       # flow
-      screens/...                  # view
-      widgets/...                  # view
+      providers/{feature}.dart     # flow state/orchestration
+      repositories/{feature}.dart  # optional flow data-source composition/mapping
+      api/{feature}.dart           # infra remote client
+      screens/{feature}/           # container view
+      widgets/{feature}/           # presentational view
       lib/ or core/                # infra
 ```
 
@@ -34,10 +35,18 @@ One `{app_name}` = one mobile service.
 
 ```text
 entry = main + router
-flow  = providers + api
-view  = screens (container) + presentational views/widgets
-infra = shared clients/formatters/utils
+flow  = providers/{feature}.dart + repositories/{feature}.dart
+view  = screens/{feature} + widgets/{feature}
+infra = api/{feature}.dart clients + shared clients/formatters/utils
 ```
+
+Flow and view use the same `{feature}` boundary under separate role roots. A
+feature repository belongs to flow, not beside `screens/` or `widgets/` as a
+view-level module.
+
+Use a repository only when it composes data sources, cache, mapping, or feature
+IO. A thin remote transport client belongs at `api/{feature}.dart` as infra; do
+not add a repository that merely forwards every API call.
 
 **No `lib/domain/` by default.** Feature rules live in providers (flow).  
 Exception: heavy **client-owned** offline DB/engine concepts only.
@@ -46,7 +55,11 @@ Missing domain ≠ put feature logic in `main.dart` / router registration.
 
 ## Rules
 
-- Provider/store calls api; widgets do not call network directly.
+- Provider calls its feature repository when composition is needed; otherwise
+  it may call the feature `api` directly. Widgets do not call repositories or
+  network clients directly.
+- Keep one file per feature directly under `providers/`, `repositories/`, and
+  `api/`; do not add a redundant `{feature}/` directory for a single file.
 - Container screen watches providers and passes plain props to presentational widgets.
 - Routes declared at entry (thin); feature work stays in providers/api.
 - Prefer symlink/consume `backend/proto/dist/dart` for MSA contracts when present. Do not copy `.proto` into the app.
@@ -56,7 +69,7 @@ Missing domain ≠ put feature logic in `main.dart` / router registration.
 ```text
 entry -> view
 view (container) -> flow
-flow -> api -> infra
+flow -> infra (including api)
 view (presentational) -> constructor params only
 ```
 
