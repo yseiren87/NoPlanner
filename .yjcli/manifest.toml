@@ -1,0 +1,85 @@
+# Managed by yjcli — do not edit by hand.
+# Skills and platform options are derived (platforms / disk state), not stored.
+schema = 1
+yjcli_version = "0.3.3"
+
+llms = ["claude"]
+plugins = ["runner", "secrets", "builder"]
+
+[platforms."backend-msa"]
+services = ["document", "evaluation", "gateway", "generation", "intelligence", "project", "research", "user"]
+
+[platforms."frontend"]
+services = ["app"]
+
+[files]
+".claude/settings.json" = { policy = "seed", sha256 = "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356", template = "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356" }
+".claude/skills/yj-arch-core/SKILL.md" = { policy = "managed", sha256 = "44fa579bde7b45dd82ce442f8bbce7f297310e546daea0e77e02ff17c0adb971" }
+".claude/skills/yj-backend-msa/SKILL.md" = { policy = "managed", sha256 = "18ab048e6ee9bd1ba3e9bda45590c9d62b2fdaefb6e14f4c0a4b44fe4eaab869" }
+".claude/skills/yj-frontend/SKILL.md" = { policy = "managed", sha256 = "9c23ecdb63614d5fecaa48d441e0854c973de8da532eaa90502706ff82f114a3" }
+".gitignore" = { policy = "merge", sha256 = "17922500a426c639886668977b8d360c2fdf57396a5811eb880f2f5efcc944ec" }
+"AGENTS.md" = { policy = "seed", sha256 = "3999bbb56f6988dcff49cd45a30cb7da6fb3136f464764757a492888560c8749" }
+"CLAUDE.md" = { policy = "managed", sha256 = "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49" }
+"Makefile" = { policy = "managed", sha256 = "176600c0cd98e4082a8a7fb5d3b618fa9c85e5c4df51a1965fe5dce6e332719a" }
+"backend-msa/document/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/document/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/evaluation/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/evaluation/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/gateway/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/gateway/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/generation/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/generation/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/intelligence/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/intelligence/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/project/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/project/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/research/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/research/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"backend-msa/user/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"backend-msa/user/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"frontend/app/.dockerignore" = { policy = "seed", sha256 = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8", template = "81fd58c78cbc45900e2af65a850b4724c5b8515d05c37df580197950efbc48b8" }
+"frontend/app/Dockerfile" = { policy = "seed", sha256 = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b", template = "e28730f27483b0805c36ef005b8747757a452481d7d39280a372b0b10d80100b" }
+"make.bat" = { policy = "managed", sha256 = "23bb190907e3fa6d8b55ca7bc94a31a0359650b70c45b36a624a4de8f54daacf" }
+"tools/builder/backend-msa/build-development.sh" = { policy = "seed", sha256 = "0ee0ef74b6574294bc59eb9ee700eb69c08f28800a25999523626107672178d4", template = "0ee0ef74b6574294bc59eb9ee700eb69c08f28800a25999523626107672178d4" }
+"tools/builder/backend-msa/build-production.sh" = { policy = "seed", sha256 = "a55bc522281bb06fdf290f272d2ad2b6af9c883b9398182b518c4f69fab40a15", template = "a55bc522281bb06fdf290f272d2ad2b6af9c883b9398182b518c4f69fab40a15" }
+"tools/builder/backend-msa/deploy-development.sh" = { policy = "seed", sha256 = "434f0265e80ae4c089d39d2e093c440d0e5c8895b48034c5336bebdfa320aeff", template = "434f0265e80ae4c089d39d2e093c440d0e5c8895b48034c5336bebdfa320aeff" }
+"tools/builder/backend-msa/deploy-production.sh" = { policy = "seed", sha256 = "40ed31d1c7a597e18210d1d648298f82915e55f30caf436ef690418df0073294", template = "40ed31d1c7a597e18210d1d648298f82915e55f30caf436ef690418df0073294" }
+"tools/builder/build-common.sh" = { policy = "managed", sha256 = "bc53aeba235a05c564a87a343e598e2974c9d325d6f89d315b614797167a220e" }
+"tools/builder/deploy-common.sh" = { policy = "managed", sha256 = "9fa252dda9e0093a3a535fcf6765a43c5aa1ca1838a4f2281d0dd2ffe9b47181" }
+"tools/builder/frontend/build-development.sh" = { policy = "seed", sha256 = "0ee0ef74b6574294bc59eb9ee700eb69c08f28800a25999523626107672178d4", template = "0ee0ef74b6574294bc59eb9ee700eb69c08f28800a25999523626107672178d4" }
+"tools/builder/frontend/build-production.sh" = { policy = "seed", sha256 = "a55bc522281bb06fdf290f272d2ad2b6af9c883b9398182b518c4f69fab40a15", template = "a55bc522281bb06fdf290f272d2ad2b6af9c883b9398182b518c4f69fab40a15" }
+"tools/builder/frontend/deploy-development.sh" = { policy = "seed", sha256 = "434f0265e80ae4c089d39d2e093c440d0e5c8895b48034c5336bebdfa320aeff", template = "434f0265e80ae4c089d39d2e093c440d0e5c8895b48034c5336bebdfa320aeff" }
+"tools/builder/frontend/deploy-production.sh" = { policy = "seed", sha256 = "40ed31d1c7a597e18210d1d648298f82915e55f30caf436ef690418df0073294", template = "40ed31d1c7a597e18210d1d648298f82915e55f30caf436ef690418df0073294" }
+"tools/builder/steps/docker.sh" = { policy = "managed", sha256 = "d2daef39e8578c0e082a99ca9189f4fad6aaf486e214bbf4d4fc7464e9914700" }
+"tools/builder/steps/proto.sh" = { policy = "managed", sha256 = "2d04acb677e591102848bbe450aec0bcbeadc2e0e741efff0244d7e073b3d420" }
+"tools/builder/steps/ssr.sh" = { policy = "managed", sha256 = "1cbc4c195e2104b1130b315456de978a4ca2fee6352e4a86ef3300b478026fac" }
+"tools/runner/run.bat" = { policy = "managed", sha256 = "3970393c7d1175e1968a7581d391cd473b71b2ea8aac687df56a3437e107fb31" }
+"tools/runner/run.ps1" = { policy = "managed", sha256 = "837822f44647bc68ae6fee1b67ae27de62d0ddc39c22354ebfec33eb12e51001" }
+"tools/runner/run.sh" = { policy = "managed", sha256 = "132088e16a171dff2476d1a6456816a014102126d2d1023c21cdf368f30e9490" }
+"tools/secrets/backend-msa/document/.env.development" = { policy = "seed", sha256 = "dcdababac7c952d4911cc8451bc8e31cc3c782debaee13ab84bb857a4527d4b0", template = "dcdababac7c952d4911cc8451bc8e31cc3c782debaee13ab84bb857a4527d4b0" }
+"tools/secrets/backend-msa/document/.env.local-dev" = { policy = "seed", sha256 = "514be24d93c0eb81dafde98fc77f7d122c1c661afadcf4e8b2eb350204d2513f", template = "514be24d93c0eb81dafde98fc77f7d122c1c661afadcf4e8b2eb350204d2513f" }
+"tools/secrets/backend-msa/document/.env.production" = { policy = "seed", sha256 = "dcdababac7c952d4911cc8451bc8e31cc3c782debaee13ab84bb857a4527d4b0", template = "dcdababac7c952d4911cc8451bc8e31cc3c782debaee13ab84bb857a4527d4b0" }
+"tools/secrets/backend-msa/evaluation/.env.development" = { policy = "seed", sha256 = "f062494d45395c1f2a153a0a52edf2173abdaa22b2ebb95eb890a25c8e98df63", template = "f062494d45395c1f2a153a0a52edf2173abdaa22b2ebb95eb890a25c8e98df63" }
+"tools/secrets/backend-msa/evaluation/.env.local-dev" = { policy = "seed", sha256 = "eb311376c84b8ff2b50d6d51184b1e5316b02821480916be616687fefb60ddb9", template = "eb311376c84b8ff2b50d6d51184b1e5316b02821480916be616687fefb60ddb9" }
+"tools/secrets/backend-msa/evaluation/.env.production" = { policy = "seed", sha256 = "f062494d45395c1f2a153a0a52edf2173abdaa22b2ebb95eb890a25c8e98df63", template = "f062494d45395c1f2a153a0a52edf2173abdaa22b2ebb95eb890a25c8e98df63" }
+"tools/secrets/backend-msa/gateway/.env.development" = { policy = "seed", sha256 = "f0073a18beba692f8152817549d9f68cd34b1c497b02c845cba31b9037d5416c", template = "f0073a18beba692f8152817549d9f68cd34b1c497b02c845cba31b9037d5416c" }
+"tools/secrets/backend-msa/gateway/.env.local-dev" = { policy = "seed", sha256 = "13faa92a7e915ae87a2c835512fb862ad8e4fdd5c05c0309b62a18c2e6ed1495", template = "13faa92a7e915ae87a2c835512fb862ad8e4fdd5c05c0309b62a18c2e6ed1495" }
+"tools/secrets/backend-msa/gateway/.env.production" = { policy = "seed", sha256 = "f0073a18beba692f8152817549d9f68cd34b1c497b02c845cba31b9037d5416c", template = "f0073a18beba692f8152817549d9f68cd34b1c497b02c845cba31b9037d5416c" }
+"tools/secrets/backend-msa/generation/.env.development" = { policy = "seed", sha256 = "0d5ca02e59e659304a54415743d36958159974164eae8ad3b4b8c286566f0e17", template = "0d5ca02e59e659304a54415743d36958159974164eae8ad3b4b8c286566f0e17" }
+"tools/secrets/backend-msa/generation/.env.local-dev" = { policy = "seed", sha256 = "0351d21966892f0040a339080089c342f1399d3efb191a1e80c10a27d4647d1b", template = "0351d21966892f0040a339080089c342f1399d3efb191a1e80c10a27d4647d1b" }
+"tools/secrets/backend-msa/generation/.env.production" = { policy = "seed", sha256 = "0d5ca02e59e659304a54415743d36958159974164eae8ad3b4b8c286566f0e17", template = "0d5ca02e59e659304a54415743d36958159974164eae8ad3b4b8c286566f0e17" }
+"tools/secrets/backend-msa/intelligence/.env.development" = { policy = "seed", sha256 = "65dc4a54891dcc3a6d1a6f9bf18ce182e6a5dce49aab2090e45d402c7418ae6e", template = "65dc4a54891dcc3a6d1a6f9bf18ce182e6a5dce49aab2090e45d402c7418ae6e" }
+"tools/secrets/backend-msa/intelligence/.env.local-dev" = { policy = "seed", sha256 = "cd6212838106c59c77bc706fd422a64f5e3663ce69c80d12c59e4f6d8f7d86f3", template = "cd6212838106c59c77bc706fd422a64f5e3663ce69c80d12c59e4f6d8f7d86f3" }
+"tools/secrets/backend-msa/intelligence/.env.production" = { policy = "seed", sha256 = "65dc4a54891dcc3a6d1a6f9bf18ce182e6a5dce49aab2090e45d402c7418ae6e", template = "65dc4a54891dcc3a6d1a6f9bf18ce182e6a5dce49aab2090e45d402c7418ae6e" }
+"tools/secrets/backend-msa/project/.env.development" = { policy = "seed", sha256 = "1b648564e0f27410712e6c218b0533f59e42eafc96126ae9694058c88af5a2c4", template = "1b648564e0f27410712e6c218b0533f59e42eafc96126ae9694058c88af5a2c4" }
+"tools/secrets/backend-msa/project/.env.local-dev" = { policy = "seed", sha256 = "7ac6f129a03b96217af4626bfb54c73a1d52c5baea2fbb9c0a04cb1e48d0f712", template = "7ac6f129a03b96217af4626bfb54c73a1d52c5baea2fbb9c0a04cb1e48d0f712" }
+"tools/secrets/backend-msa/project/.env.production" = { policy = "seed", sha256 = "1b648564e0f27410712e6c218b0533f59e42eafc96126ae9694058c88af5a2c4", template = "1b648564e0f27410712e6c218b0533f59e42eafc96126ae9694058c88af5a2c4" }
+"tools/secrets/backend-msa/research/.env.development" = { policy = "seed", sha256 = "9441e5d83c262152e455243d482ead77238569067712dadc1892923559731358", template = "9441e5d83c262152e455243d482ead77238569067712dadc1892923559731358" }
+"tools/secrets/backend-msa/research/.env.local-dev" = { policy = "seed", sha256 = "f25e6f45b20b2b89367a598ca34088d5e754b77ee78f17e05d768a5e7ead5cf7", template = "f25e6f45b20b2b89367a598ca34088d5e754b77ee78f17e05d768a5e7ead5cf7" }
+"tools/secrets/backend-msa/research/.env.production" = { policy = "seed", sha256 = "9441e5d83c262152e455243d482ead77238569067712dadc1892923559731358", template = "9441e5d83c262152e455243d482ead77238569067712dadc1892923559731358" }
+"tools/secrets/backend-msa/user/.env.development" = { policy = "seed", sha256 = "92587b46c8ad150163f1e441815a8f3d58b3c38df040df682d9ec0855e05fe96", template = "92587b46c8ad150163f1e441815a8f3d58b3c38df040df682d9ec0855e05fe96" }
+"tools/secrets/backend-msa/user/.env.local-dev" = { policy = "seed", sha256 = "77a5e6998548ad87ec329e43b58498523d1b97c034775ed9f0087b66a44b1cb2", template = "77a5e6998548ad87ec329e43b58498523d1b97c034775ed9f0087b66a44b1cb2" }
+"tools/secrets/backend-msa/user/.env.production" = { policy = "seed", sha256 = "92587b46c8ad150163f1e441815a8f3d58b3c38df040df682d9ec0855e05fe96", template = "92587b46c8ad150163f1e441815a8f3d58b3c38df040df682d9ec0855e05fe96" }
+"tools/secrets/frontend/app/.env.development" = { policy = "seed", sha256 = "bf325a6f87c7431adc2dd867146d2a3ccd58650c1968cded3517058bbba0d0ed", template = "bf325a6f87c7431adc2dd867146d2a3ccd58650c1968cded3517058bbba0d0ed" }
+"tools/secrets/frontend/app/.env.local-dev" = { policy = "seed", sha256 = "8b94438441ca6dddc1d4c1ab2580574f22038824ebe292a2a177dcaf437656ff", template = "8b94438441ca6dddc1d4c1ab2580574f22038824ebe292a2a177dcaf437656ff" }
+"tools/secrets/frontend/app/.env.production" = { policy = "seed", sha256 = "bf325a6f87c7431adc2dd867146d2a3ccd58650c1968cded3517058bbba0d0ed", template = "bf325a6f87c7431adc2dd867146d2a3ccd58650c1968cded3517058bbba0d0ed" }
