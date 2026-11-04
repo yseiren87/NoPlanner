@@ -185,6 +185,8 @@ secrets/
 # Prefer committing language dists under <platform>/proto/dist/{lang}/ when intentional.
 # Uncomment if generated stubs must stay local-only:
 # */proto/dist/
+# backend-msa/proto/generate.sh writes Go stubs next to each .proto (not committed).
+backend-msa/proto/**/*.pb.go
 
 # ----- Misc -----
 *.bak
@@ -198,7 +200,9 @@ secrets/
 
 # >>> yjcli:managed
 # Managed by yjcli — regenerated on every run.
-# secrets plugin: env values are committed in plain text (private repos only).
+# Env values are committed in plain text (private repos only).
 !tools/secrets/
 !tools/secrets/**
+# Build output (tools/builder).
+/dist/
 # <<< yjcli:managed

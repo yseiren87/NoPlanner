@@ -7,7 +7,7 @@ import { fileURLToPath, URL } from "node:url";
 
 // Env files (yj-arch-core): required .env.local-dev plus optional .env.<environment> files.
 // Loaded via Vite --mode from tools/secrets/<platform>/<app>/ (no plain .env).
-// tools/runner always exports values from .env.local-dev before RUN_COMMAND.
+// tools/runner exports values from .env.local-dev before calling run_one.
 
 const appDir = path.dirname(fileURLToPath(import.meta.url));
 const secretsDir = path.resolve(appDir, "../../tools/secrets", path.basename(path.dirname(appDir)), path.basename(appDir));
