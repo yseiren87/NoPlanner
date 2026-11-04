@@ -56,7 +56,7 @@ Missing domain ≠ dump DTOs/utils into `main.tsx` / `App.tsx`. Keep feature wor
 - Container route wires store + router; presentational page takes props only.
 - Routes declared at entry — do not scatter route tables; entry stays registration-thin.
 - Generated UI primitives: do not hand-edit or duplicate.
-- Consume backend contracts via generated client or `backend-msa/proto/dist/{lang}` — never copy `.proto` into frontend.
+- Consume backend contracts via a generated client or the shared root contract (see "Shared proto contract") — never copy `.proto` into frontend.
 
 ## Optional: server templating (SSR)
 
@@ -85,3 +85,10 @@ view (presentational) -> props only
 
 - Stay inside `frontend/{app_name}/` (and linked contract dist if needed).
 - Do not load Electron/Flutter skills for React web work.
+
+## Shared proto contract
+
+- The gRPC/protobuf contract lives **only** at the repository root: schemas in `proto/*.proto`, generated libraries in `proto/dist/<lang>/` (skill `yj-proto`). It belongs to no platform.
+- Before adding or calling a gRPC API, look for the root `proto/` and work there. Never create a `proto/` folder or a `.proto` file inside a platform or service folder, and never copy `.proto` files or generated code into one.
+- If the repository has no root `proto/` (or not the language you need under `proto/dist/`), stop and ask the user to add it with yjcli (`yjcli start` → platform `proto`, choosing the language) instead of creating it by hand.
+- Consume the generated library through a path dependency on `proto/dist/<lang>/`: Go `require` + `replace`, Dart `path:` dependency, Python editable path dependency. Do not edit generated code — change the `.proto` and regenerate (see `yj-arch-core` › Tooling).

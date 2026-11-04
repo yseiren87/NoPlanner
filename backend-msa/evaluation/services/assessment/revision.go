@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	revision "noplanner/backend-msa/evaluation/domains/revision"
-	documentv1 "noplanner/backend-msa/proto/dist/golang/document/v1"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
+	documentv1 "noplanner/proto/document/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
 	"strings"
 )
 

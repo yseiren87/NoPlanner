@@ -46,7 +46,7 @@ case "$ENVIRONMENT" in
 esac
 
 if [ -n "$NAME" ]; then
-  if [ "$NAME" = "proto" ] || [ ! -d "$PLATFORM_DIR/$NAME" ]; then
+  if [ ! -d "$PLATFORM_DIR/$NAME" ]; then
     echo "unknown service: $NAME (expected $PLATFORM_DIR/$NAME)" >&2
     exit 1
   fi
@@ -55,9 +55,6 @@ else
   services=()
   for dir in "$PLATFORM_DIR"/*/; do
     [ -d "$dir" ] || continue
-    case "$(basename "$dir")" in
-      proto) continue ;;
-    esac
     services+=("$(basename "$dir")")
   done
 fi

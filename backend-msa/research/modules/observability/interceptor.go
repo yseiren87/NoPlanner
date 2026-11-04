@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
+	commonv1 "noplanner/proto/common/v1"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

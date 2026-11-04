@@ -13,8 +13,8 @@ import (
 	"google.golang.org/grpc"
 	implementation "noplanner/backend-msa/generation/domains/implementation"
 	"noplanner/backend-msa/generation/modules/connectors"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	generationv1 "noplanner/proto/generation/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 type proposalIntelligenceStub struct {

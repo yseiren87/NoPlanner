@@ -14,6 +14,7 @@ function Show-Help {
     Write-Host "Usage:"
     Write-Host "  make.ps1 <platform> [NAME=<service>]               # run locally (tools/runner)"
     Write-Host "  make.ps1 <platform>-build-<env> [NAME=<service>]   # build into dist/ (tools/builder)"
+    Write-Host "  make.ps1 proto-build [PROTO_LANG=<language>]       # generate proto/dist/<language>/ (tools/builder/proto)"
     Write-Host "  make.ps1 <platform>-deploy-<env> [NAME=<service>]  # deploy dist/ (tools/deployer)"
     Write-Host "  <env>: development | production"
     Write-Host ""
@@ -21,13 +22,24 @@ function Show-Help {
 }
 
 $Name = ""
+$Lang = ""
 foreach ($arg in $Rest) {
     if ($arg -like "NAME=*") { $Name = $arg.Substring(5) }
+    if ($arg -like "PROTO_LANG=*") { $Lang = $arg.Substring(11) }
 }
 
 $tool = $null
 $platform = $Target
 $scriptArgs = @()
+if ($Target -eq "proto-build") {
+    $script = Join-Path $PSScriptRoot "tools\builder\proto\builder.ps1"
+    if (-not (Test-Path $script)) {
+        Write-Host "missing: tools/builder/proto/builder.ps1"
+        exit 1
+    }
+    if ($Lang) { & $script $Lang } else { & $script }
+    exit $LASTEXITCODE
+}
 if ($Target -match "^(.+)-build-(development|production)$") {
     $tool = "builder"; $platform = $Matches[1]; $scriptArgs = @($Matches[2])
 }

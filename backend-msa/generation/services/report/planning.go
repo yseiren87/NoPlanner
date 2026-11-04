@@ -11,11 +11,11 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	planning "noplanner/backend-msa/generation/domains/planning"
 	"noplanner/backend-msa/generation/modules/rpcerror"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	documentv1 "noplanner/backend-msa/proto/dist/golang/document/v1"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	commonv1 "noplanner/proto/common/v1"
+	documentv1 "noplanner/proto/document/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
+	generationv1 "noplanner/proto/generation/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 func (s *Service) CreateImprovementPlan(ctx context.Context, req *generationv1.CreateImprovementPlanRequest) (*generationv1.ImprovementPlan, error) {

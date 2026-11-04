@@ -7,7 +7,7 @@ require (
 	golang.org/x/oauth2 v0.36.0
 	google.golang.org/grpc v1.79.3
 	google.golang.org/protobuf v1.36.11
-	noplanner/backend-msa/proto v0.0.0
+	noplanner/proto v0.0.0
 )
 
 require (
@@ -18,4 +18,4 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
 )
 
-replace noplanner/backend-msa/proto => ../proto
+replace noplanner/proto => ../../proto/dist/go

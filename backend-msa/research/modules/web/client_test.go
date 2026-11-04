@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"google.golang.org/grpc"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	commonv1 "noplanner/proto/common/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 type fakeIntelligence struct{ sourceURL string }

@@ -3,7 +3,7 @@ package assessment
 import (
 	"context"
 	qualitydomain "noplanner/backend-msa/evaluation/domains/quality"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
 	"testing"
 )
 

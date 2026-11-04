@@ -7,8 +7,8 @@ import (
 	design "noplanner/backend-msa/generation/domains/design"
 	"noplanner/backend-msa/generation/modules/rpcerror"
 	"noplanner/backend-msa/generation/modules/uivalidator"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
+	commonv1 "noplanner/proto/common/v1"
+	generationv1 "noplanner/proto/generation/v1"
 )
 
 func (s *Service) GenerateProductDesign(ctx context.Context, req *generationv1.GenerateProductDesignRequest) (*generationv1.ProductDesign, error) {

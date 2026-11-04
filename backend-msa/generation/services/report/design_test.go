@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
+	generationv1 "noplanner/proto/generation/v1"
 )
 
 type passingUIValidator struct{}

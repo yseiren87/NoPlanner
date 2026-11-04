@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	researchv1 "noplanner/backend-msa/proto/dist/golang/research/v1"
+	commonv1 "noplanner/proto/common/v1"
+	researchv1 "noplanner/proto/research/v1"
 	"noplanner/backend-msa/research/domains/investigation"
 	"noplanner/backend-msa/research/modules/rpcerror"
 	webclient "noplanner/backend-msa/research/modules/web"

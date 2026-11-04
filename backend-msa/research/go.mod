@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/jackc/pgx/v5 v5.10.0
 	google.golang.org/grpc v1.79.3
-	noplanner/backend-msa/proto v0.0.0
+	noplanner/proto v0.0.0
 )
 
 require (
@@ -20,4 +20,4 @@ require (
 	google.golang.org/protobuf v1.36.11 // indirect
 )
 
-replace noplanner/backend-msa/proto => ../proto
+replace noplanner/proto => ../../proto/dist/go

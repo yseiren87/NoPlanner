@@ -13,9 +13,9 @@ import (
 	"noplanner/backend-msa/generation/modules/connectors"
 	"noplanner/backend-msa/generation/modules/gitrepo"
 	"noplanner/backend-msa/generation/modules/rpcerror"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	commonv1 "noplanner/proto/common/v1"
+	generationv1 "noplanner/proto/generation/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 func (s *Service) AnalyzeRepository(ctx context.Context, req *generationv1.AnalyzeRepositoryRequest) (*generationv1.RepositoryAnalysis, error) {

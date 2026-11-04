@@ -24,6 +24,7 @@ Reduce AI cost and blast radius. Do not reinterpret the whole repo, add wrappers
 ```text
 backend-msa/          # yj-backend-msa
 frontend/             # yj-frontend
+proto/                # yj-proto
 ```
 
 ```text
@@ -32,7 +33,7 @@ frontend/             # yj-frontend
 ```
 
 - Platform and service folders hold **code only**: source folders, stack files (e.g. `package.json`) and the service's `.env.examples`. Run/build/deploy tooling lives outside them (see Tooling below).
-- `{platform}/proto/` is reserved for protobuf contracts; it is never a service.
+- The gRPC/protobuf contract is the root `proto/` (skill `yj-proto`), shared by every platform; no platform or service has a `proto/` of its own.
 - Do not invent new platform roots or put app code at repo root.
 - Do not create a `Makefile`, `scripts/` folder or run/build script inside any platform or service folder.
 
@@ -41,6 +42,7 @@ frontend/             # yj-frontend
 - Every service root has `.env.examples` — the committed field contract. Format every entry as one comment line followed by one empty `FIELD=` line, with one blank line between entries.
 - Field sets come from the platform's env kind:
   - `listen`: `backend-msa` (PORT 8080), `frontend` (PORT 5173)
+  - ``: `proto`
 - `HOST`/`PORT` are required for `listen`. For `worker` they are optional — add them only when the process really listens. `app` services need NAME/VERSION only.
 - Do not invent fields outside the contract; add a field to `.env.examples` first, then wherever its values are kept.
 - Never commit a plain `.env`, and do not use Vite's `.env.local` convention unless a thin loader maps it to this structure.
@@ -77,6 +79,7 @@ frontend/             # yj-frontend
 |------|------|
 | `backend-msa/**` | `yj-backend-msa` |
 | `frontend/**` | `yj-frontend` |
+| `proto/**` | `yj-proto` |
 
 Never load all platform skills. Never apply a platform skill outside its folder.
 
@@ -145,6 +148,6 @@ After: summarize files, boundaries, new files, test/migration risk briefly.
 
 ## Cross-platform contracts
 
-- Prefer generated clients / `{platform}/proto/dist/{lang}` (e.g. `backend-msa/proto/dist/{lang}`) over hand-copied DTOs.
+- Prefer generated clients / `proto/dist/<lang>` (path dependency) over hand-copied DTOs.
 - Do not import another platform's source tree.
 - Do not read unrelated platforms unless the user task explicitly spans them.

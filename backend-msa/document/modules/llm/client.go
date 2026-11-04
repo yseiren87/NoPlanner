@@ -10,7 +10,7 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 var (

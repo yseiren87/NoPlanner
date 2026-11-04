@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"noplanner/backend-msa/intelligence/modules/provider"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	commonv1 "noplanner/proto/common/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 type Service struct {

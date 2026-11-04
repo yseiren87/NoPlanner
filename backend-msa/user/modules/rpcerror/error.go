@@ -3,7 +3,7 @@ package rpcerror
 import (
 	"context"
 
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
+	commonv1 "noplanner/proto/common/v1"
 	"noplanner/backend-msa/user/modules/observability"
 
 	"google.golang.org/grpc/codes"

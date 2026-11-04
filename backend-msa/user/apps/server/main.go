@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	userv1 "noplanner/backend-msa/proto/dist/golang/user/v1"
+	userv1 "noplanner/proto/user/v1"
 	"noplanner/backend-msa/user/domains/authtransaction"
 	"noplanner/backend-msa/user/modules/config"
 	"noplanner/backend-msa/user/modules/googleoauth"

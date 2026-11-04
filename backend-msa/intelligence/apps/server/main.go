@@ -10,7 +10,7 @@ import (
 	"noplanner/backend-msa/intelligence/modules/auth"
 	"noplanner/backend-msa/intelligence/modules/provider"
 	intelligenceservice "noplanner/backend-msa/intelligence/services/intelligence"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 func main() {

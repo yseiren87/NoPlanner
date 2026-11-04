@@ -7,8 +7,8 @@ import (
 
 	projectdomain "noplanner/backend-msa/project/domains/project"
 	"noplanner/backend-msa/project/modules/token"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	projectv1 "noplanner/backend-msa/proto/dist/golang/project/v1"
+	commonv1 "noplanner/proto/common/v1"
+	projectv1 "noplanner/proto/project/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

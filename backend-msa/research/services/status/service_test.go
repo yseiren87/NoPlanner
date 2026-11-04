@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
+	commonv1 "noplanner/proto/common/v1"
 )
 
 func TestGetStatus(t *testing.T) {

@@ -185,8 +185,6 @@ secrets/
 # Prefer committing language dists under <platform>/proto/dist/{lang}/ when intentional.
 # Uncomment if generated stubs must stay local-only:
 # */proto/dist/
-# backend-msa/proto/generate.sh writes Go stubs next to each .proto (not committed).
-backend-msa/proto/**/*.pb.go
 
 # ----- Misc -----
 *.bak
@@ -205,4 +203,6 @@ backend-msa/proto/**/*.pb.go
 !tools/secrets/**
 # Build output (tools/builder).
 /dist/
+# Generated proto libraries are committed (consumed by path dependency).
+!proto/dist/
 # <<< yjcli:managed

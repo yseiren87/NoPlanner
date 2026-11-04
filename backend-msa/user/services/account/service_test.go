@@ -10,8 +10,8 @@ import (
 	"noplanner/backend-msa/user/modules/googleoauth"
 	"noplanner/backend-msa/user/modules/token"
 
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	userv1 "noplanner/backend-msa/proto/dist/golang/user/v1"
+	commonv1 "noplanner/proto/common/v1"
+	userv1 "noplanner/proto/user/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

@@ -8,14 +8,14 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	documentv1 "noplanner/backend-msa/proto/dist/golang/document/v1"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
-	gatewayv1 "noplanner/backend-msa/proto/dist/golang/gateway/v1"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
-	projectv1 "noplanner/backend-msa/proto/dist/golang/project/v1"
-	researchv1 "noplanner/backend-msa/proto/dist/golang/research/v1"
-	userv1 "noplanner/backend-msa/proto/dist/golang/user/v1"
+	commonv1 "noplanner/proto/common/v1"
+	documentv1 "noplanner/proto/document/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
+	gatewayv1 "noplanner/proto/gateway/v1"
+	generationv1 "noplanner/proto/generation/v1"
+	projectv1 "noplanner/proto/project/v1"
+	researchv1 "noplanner/proto/research/v1"
+	userv1 "noplanner/proto/user/v1"
 )
 
 type statusClient interface {

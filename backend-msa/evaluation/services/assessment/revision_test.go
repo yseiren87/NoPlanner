@@ -4,7 +4,7 @@ import (
 	"context"
 	revision "noplanner/backend-msa/evaluation/domains/revision"
 	"noplanner/backend-msa/evaluation/modules/llm"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
 	"testing"
 )
 

@@ -11,8 +11,8 @@ import (
 	"noplanner/backend-msa/user/modules/token"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	userv1 "noplanner/backend-msa/proto/dist/golang/user/v1"
+	commonv1 "noplanner/proto/common/v1"
+	userv1 "noplanner/proto/user/v1"
 )
 
 type googleProvider interface {

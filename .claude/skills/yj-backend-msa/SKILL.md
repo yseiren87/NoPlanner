@@ -2,9 +2,9 @@
 name: yj-backend-msa
 description: >-
   Backend MSA architecture with mandatory gRPC/protobuf. Language-agnostic
-  (Go/Python/Java/etc.). Covers backend-msa/{service}, backend-msa/proto, and
-  proto/dist/{lang}. Supports owner, policy, and edge/gateway services (domains
-  optional). Use only when editing `backend-msa/**`.
+  (Go/Python/Java/etc.). Covers backend-msa/{service}; the contract is the
+  shared root proto/ (yj-proto). Supports owner, policy, and edge/gateway
+  services (domains optional). Use only when editing `backend-msa/**`.
 ---
 
 # yj-backend-msa
@@ -15,14 +15,6 @@ Requires `yj-arch-core`. Scope: `backend-msa/**`.
 
 ```text
 backend-msa/
-  proto/                   # owned by backend MSA only
-    *.proto
-    dist/
-      golang/
-      python/
-      java/
-      dart/
-      ...
   {service_name}/
     apps/                  # entry
     services/              # flow
@@ -33,6 +25,7 @@ backend-msa/
 - One `{service_name}` = one deployable microservice.
 - Do not over-split domains into tiny services. Split by cohesive business capability.
 - gRPC + protobuf are **mandatory**. External API surface is proto, not ad-hoc JSON structs copied across services.
+- This platform has no proto folder of its own: the contract is the shared root `proto/` (see "Shared proto contract").
 
 ## Service stereotypes (same folders, different fill)
 
@@ -46,11 +39,9 @@ Omit empty `domains/` trees. Do not invent fake repositories to “have a domain
 
 ## proto
 
-- Sources live only in `backend-msa/proto/`.
-- Generated stubs go to `backend-msa/proto/dist/{lang}/`.
-- Other platforms (e.g. `mobile-app`) may **symlink** to `backend-msa/proto/dist/{lang}` — they must not own `.proto` copies.
-- Prefer package boundaries in proto that align with service boundaries.
-- Regeneration (protoc is the standard here; buf is not used) is wired into the repository's build tooling, which detects `backend-msa/proto/` automatically (see `yj-arch-core` › Tooling). Implement codegen there, not as an ad-hoc one-off command.
+- Every service's API is defined in the root `proto/` (skill `yj-proto`); services depend on `proto/dist/<lang>/` by path.
+- Prefer proto packages that align with service boundaries (`{domain}.v1` per owning service).
+- Builds of this platform regenerate the contract first (see `yj-arch-core` › Tooling).
 - Server-rendered HTML does not belong here: a service that must render pages lives in `backend-ssr/` (`yj-backend-ssr`) and calls MSA services over gRPC.
 
 ## Roles inside `{service_name}`
@@ -148,5 +139,12 @@ Forbidden: handler→domain, domain→flow, cross-service source imports, new la
 
 ## Editing scope
 
-- Touch one `{service_name}` plus, if needed, `backend-msa/proto` (and regenerate dist).
+- Touch one `{service_name}` plus, if needed, the root `proto/` (and regenerate `proto/dist/`).
 - Do not open `frontend/` or other platforms unless the user explicitly asks for a cross-change.
+
+## Shared proto contract
+
+- The gRPC/protobuf contract lives **only** at the repository root: schemas in `proto/*.proto`, generated libraries in `proto/dist/<lang>/` (skill `yj-proto`). It belongs to no platform.
+- Before adding or calling a gRPC API, look for the root `proto/` and work there. Never create a `proto/` folder or a `.proto` file inside a platform or service folder, and never copy `.proto` files or generated code into one.
+- If the repository has no root `proto/` (or not the language you need under `proto/dist/`), stop and ask the user to add it with yjcli (`yjcli start` → platform `proto`, choosing the language) instead of creating it by hand.
+- Consume the generated library through a path dependency on `proto/dist/<lang>/`: Go `require` + `replace`, Dart `path:` dependency, Python editable path dependency. Do not edit generated code — change the `.proto` and regenerate (see `yj-arch-core` › Tooling).

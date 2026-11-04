@@ -3,8 +3,8 @@ package status
 import (
 	"context"
 
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
+	commonv1 "noplanner/proto/common/v1"
+	generationv1 "noplanner/proto/generation/v1"
 )
 
 type Service struct {

@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	researchv1 "noplanner/backend-msa/proto/dist/golang/research/v1"
+	researchv1 "noplanner/proto/research/v1"
 	"noplanner/backend-msa/research/domains/investigation"
 	"noplanner/backend-msa/research/modules/config"
 	"noplanner/backend-msa/research/modules/observability"

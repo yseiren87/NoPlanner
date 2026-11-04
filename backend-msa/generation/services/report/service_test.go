@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"context"
 	domain "noplanner/backend-msa/generation/domains/report"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
+	generationv1 "noplanner/proto/generation/v1"
 	"testing"
 )
 

@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc/status"
 	domain "noplanner/backend-msa/evaluation/domains/assessment"
 	"noplanner/backend-msa/evaluation/modules/llm"
-	documentv1 "noplanner/backend-msa/proto/dist/golang/document/v1"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
+	documentv1 "noplanner/proto/document/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
 )
 
 type memoryStore struct{ value domain.Analysis }

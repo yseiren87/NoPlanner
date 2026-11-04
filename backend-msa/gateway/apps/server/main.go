@@ -18,7 +18,7 @@ import (
 	"noplanner/backend-msa/gateway/modules/token"
 	apiservice "noplanner/backend-msa/gateway/services/api"
 	"noplanner/backend-msa/gateway/services/status"
-	gatewayv1 "noplanner/backend-msa/proto/dist/golang/gateway/v1"
+	gatewayv1 "noplanner/proto/gateway/v1"
 )
 
 func main() {

@@ -6,12 +6,13 @@ PLATFORMS := backend-msa frontend
 BUILD_TARGETS := $(foreach p,$(PLATFORMS),$(p)-build-development $(p)-build-production)
 DEPLOY_TARGETS := $(foreach p,$(PLATFORMS),$(p)-deploy-development $(p)-deploy-production)
 
-.PHONY: help $(PLATFORMS) $(BUILD_TARGETS) $(DEPLOY_TARGETS)
+.PHONY: help $(PLATFORMS) $(BUILD_TARGETS) proto-build $(DEPLOY_TARGETS)
 
 help:
 	@echo "Usage:"
 	@echo "  make <platform> [NAME=<service>]               # run locally (tools/runner)"
 	@echo "  make <platform>-build-<env> [NAME=<service>]   # build into dist/ (tools/builder)"
+	@echo "  make proto-build [PROTO_LANG=<language>]       # generate proto/dist/<language>/ (tools/builder/proto)"
 	@echo "  make <platform>-deploy-<env> [NAME=<service>]  # deploy dist/ (tools/deployer)"
 	@echo "  <env>: development | production"
 	@echo ""
@@ -25,6 +26,10 @@ $(BUILD_TARGETS):
 	@p="$(word 1,$(subst -build-, ,$@))"; e="$(word 2,$(subst -build-, ,$@))"; \
 	test -x "tools/builder/$$p/builder.sh" || { echo "missing: tools/builder/$$p/builder.sh"; exit 1; }; \
 	"tools/builder/$$p/builder.sh" "$$e" $(NAME)
+
+proto-build:
+	@test -x "tools/builder/proto/builder.sh" || (echo "missing: tools/builder/proto/builder.sh"; exit 1)
+	@"tools/builder/proto/builder.sh" $(PROTO_LANG)
 
 $(DEPLOY_TARGETS):
 	@p="$(word 1,$(subst -deploy-, ,$@))"; e="$(word 2,$(subst -deploy-, ,$@))"; \

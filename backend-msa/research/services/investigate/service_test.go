@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	researchv1 "noplanner/backend-msa/proto/dist/golang/research/v1"
+	researchv1 "noplanner/proto/research/v1"
 	"noplanner/backend-msa/research/domains/investigation"
 )
 

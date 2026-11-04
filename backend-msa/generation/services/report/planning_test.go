@@ -6,9 +6,9 @@ import (
 
 	"google.golang.org/grpc"
 	planning "noplanner/backend-msa/generation/domains/planning"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
+	generationv1 "noplanner/proto/generation/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 type generatedPlanEvaluationStub struct {

@@ -16,8 +16,8 @@ import (
 	"noplanner/backend-msa/evaluation/modules/observability"
 	"noplanner/backend-msa/evaluation/modules/auth"
 	assessmentservice "noplanner/backend-msa/evaluation/services/assessment"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 func main() {

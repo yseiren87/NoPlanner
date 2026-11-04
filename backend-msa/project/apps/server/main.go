@@ -12,7 +12,7 @@ import (
 	"noplanner/backend-msa/project/modules/observability"
 	"noplanner/backend-msa/project/modules/token"
 	projectservice "noplanner/backend-msa/project/services/project"
-	projectv1 "noplanner/backend-msa/proto/dist/golang/project/v1"
+	projectv1 "noplanner/proto/project/v1"
 )
 
 func main() {

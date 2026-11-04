@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"noplanner/backend-msa/gateway/modules/clients"
-	generationv1 "noplanner/backend-msa/proto/dist/golang/generation/v1"
-	projectv1 "noplanner/backend-msa/proto/dist/golang/project/v1"
+	generationv1 "noplanner/proto/generation/v1"
+	projectv1 "noplanner/proto/project/v1"
 )
 
 type projectClientStub struct {

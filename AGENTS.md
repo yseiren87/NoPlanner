@@ -33,9 +33,10 @@
 - Commit directly on `main` (no feature branches); push only when asked.
 - Development follows `Progress.md`: take the first unchecked item, implement only that, verify, then check it off
   and record it (rules in `Progress.md` §1). Read only the planning docs linked from that item.
-- Run through the root `make` targets. A fresh clone needs `make backend-msa-build-development` once to generate
-  the gRPC code (`backend-msa/proto/generate.sh`), which `go run` needs.
-- Change contracts in `backend-msa/proto/<pkg>/v1/*.proto` first, then regenerate. Never edit generated `*.pb.go`.
+- Run through the root `make` targets.
+- The gRPC contract lives in the root `proto/<pkg>/v1/*.proto`; its generated Go library `proto/dist/go/` (module
+  `noplanner/proto`) is committed. Change a `.proto` first, run `make proto-build`, and commit the regenerated code
+  with the change. Never edit generated `*.pb.go`. Services depend on it via `replace noplanner/proto => ../../proto/dist/go`.
 - Build (`build_one`) and deploy are not implemented yet. Their scripts fail with a pointer to the GUIDE until a
   deploy target is decided.
 
@@ -51,6 +52,7 @@ When creating, modifying, reviewing, or refactoring code:
 |------|------|
 | `backend-msa/**` | `yj-backend-msa` |
 | `frontend/**` | `yj-frontend` |
+| `proto/**` | `yj-proto` |
 
 Never load all platform skills. Never apply a platform skill outside its folder.
 
@@ -74,11 +76,11 @@ Skills are installed under:
 | `.claude/skills/` | Claude Code skills (rendered by yjcli) |
 | `.claude/settings.json` | Claude Code settings |
 | `backend-msa/` | gRPC microservices sharing one proto contract — skill `yj-backend-msa` |
-| `backend-msa/proto/` | gRPC/protobuf contract |
 | `frontend/` | Vite + React + TS web apps — skill `yj-frontend` |
+| `proto/` | Shared gRPC/protobuf contract: `*.proto` schemas and generated libraries in `proto/dist/<lang>/` — skill `yj-proto` |
 | `tools/secrets/<platform>/<service>/` | Per-service env values (`.env.local-dev`, `.env.<environment>`) — committed in plain text |
 | `tools/runner/` | Local run — `GUIDE.md` (managed) + `<platform>/runner.{sh,ps1}` (repository-owned); `make <platform> [NAME=<service>]` |
-| `tools/builder/` | Build — `GUIDE.md` (managed) + `<platform>/builder.{sh,ps1}` (repository-owned); `make <platform>-build-<env>` |
+| `tools/builder/` | Build — `GUIDE.md` (managed) + `<platform>/builder.{sh,ps1}` (repository-owned); `make <platform>-build-<env>`, `make proto-build` (codegen) |
 | `dist/<platform>/<service>/` | Build output (git-ignored) — input of the deployer |
 | `tools/deployer/` | Deploy — `GUIDE.md` (managed) + `<platform>/deployer.{sh,ps1}` (repository-owned); `make <platform>-deploy-<env>` |
 <!-- /yjcli:layout -->
@@ -95,7 +97,7 @@ Skills are installed under:
 | `backend-msa/research/` | Investigation of claims and evidence; PostgreSQL |
 | `backend-msa/evaluation/` | Plan assessment; PostgreSQL + Redis |
 | `backend-msa/generation/` | Report generation; PostgreSQL |
-| `backend-msa/proto/` | gRPC contracts (`<pkg>/v1/*.proto`, shared `common/v1`), own Go module `noplanner/backend-msa/proto`; `generate.sh` writes `*.pb.go` next to each `.proto` (git-ignored) |
+| `proto/` | gRPC contracts (`<pkg>/v1/*.proto`, shared `common/v1`); generated Go library in `proto/dist/go/` (module `noplanner/proto`, committed) |
 | `frontend/app/` | React SPA |
 | `docs/` | Product planning docs (`01-definition` … `10-test-plan`) |
 | `Progress.md` | Development checklist and progress log |
@@ -118,8 +120,8 @@ Skills are installed under:
 # install
 (cd frontend/app && npm ci)            # Go modules download on first run
 
-# generate gRPC code (proto/generate.sh; build_one itself is not implemented yet)
-make backend-msa-build-development NAME=gateway
+# regenerate the gRPC library after changing proto/**/*.proto
+make proto-build
 
 # run / dev (env from tools/secrets/<platform>/<service>/.env.local-dev)
 make backend-msa [NAME=<service>]
@@ -151,10 +153,10 @@ Root `make` targets (when installed) are listed in the Repository layout table a
 
 - Feature ownership: one responsibility per service (see Project-specific paths). `gateway` has no database;
   `intelligence` is the only service that calls the LLM provider.
-- Import / layer rules: services talk only through `backend-msa/proto` contracts. Inside a service follow
+- Import / layer rules: services talk only through `proto/` contracts. Inside a service follow
   `yj-backend-msa` (`apps/` → `services/` → `domains/` / `modules/`). The SPA reaches the backend only through
   `gateway`.
-- Generated / vendor code (do not hand-edit): `backend-msa/proto/**/*.pb.go`.
+- Generated / vendor code (do not hand-edit): `proto/dist/`.
 
 ---
 
@@ -182,7 +184,7 @@ Root `make` targets (when installed) are listed in the Repository layout table a
 
 ## 10. Secrets & safety
 
-- Never commit: build output (`dist/`), generated `backend-msa/proto/**/*.pb.go`, `node_modules/`
+- Never commit: build output (`dist/`), `node_modules/` (`proto/dist/` is generated code and IS committed)
 - Env values: `tools/secrets/<platform>/<service>/.env.*` are committed in plain text (private repo only)
 - Destructive commands (require explicit user approval): dropping or resetting databases, any `make *-deploy-*`
 
@@ -201,5 +203,5 @@ Root `make` targets (when installed) are listed in the Repository layout table a
 |------|----------|
 | Progress / next task | `Progress.md` |
 | Planning docs | `docs/01-definition.md` … `docs/10-test-plan.md` (architecture: `docs/09-architecture.md`) |
-| gRPC contracts | `backend-msa/proto/` |
+| gRPC contracts | `proto/` → `proto/dist/go/` |
 | Run / build / deploy tooling | `tools/runner/GUIDE.md`, `tools/builder/GUIDE.md`, `tools/deployer/GUIDE.md` |

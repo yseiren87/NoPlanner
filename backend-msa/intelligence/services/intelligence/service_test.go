@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"noplanner/backend-msa/intelligence/modules/provider"
-	intelligencev1 "noplanner/backend-msa/proto/dist/golang/intelligence/v1"
+	intelligencev1 "noplanner/proto/intelligence/v1"
 )
 
 type fakeClient struct{}

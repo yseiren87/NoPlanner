@@ -10,8 +10,8 @@ import (
 	documentdomain "noplanner/backend-msa/document/domains/document"
 	"noplanner/backend-msa/document/modules/llm"
 	"noplanner/backend-msa/document/modules/webfetch"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	documentv1 "noplanner/backend-msa/proto/dist/golang/document/v1"
+	commonv1 "noplanner/proto/common/v1"
+	documentv1 "noplanner/proto/document/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

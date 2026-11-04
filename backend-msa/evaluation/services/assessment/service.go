@@ -15,9 +15,9 @@ import (
 	qualitydomain "noplanner/backend-msa/evaluation/domains/quality"
 	revisiondomain "noplanner/backend-msa/evaluation/domains/revision"
 	"noplanner/backend-msa/evaluation/modules/llm"
-	commonv1 "noplanner/backend-msa/proto/dist/golang/common/v1"
-	documentv1 "noplanner/backend-msa/proto/dist/golang/document/v1"
-	evaluationv1 "noplanner/backend-msa/proto/dist/golang/evaluation/v1"
+	commonv1 "noplanner/proto/common/v1"
+	documentv1 "noplanner/proto/document/v1"
+	evaluationv1 "noplanner/proto/evaluation/v1"
 )
 
 type Service struct {
