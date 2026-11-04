@@ -1,7 +1,7 @@
 # Managed by yjcli — do not edit by hand.
 # Skills and platform options are derived (platforms / disk state), not stored.
 schema = 1
-yjcli_version = "0.5.0"
+yjcli_version = "0.5.1"
 
 llms = ["claude"]
 plugins = ["runner", "builder", "deployer"]
@@ -17,7 +17,7 @@ languages = ["go"]
 
 [files]
 ".claude/settings.json" = { policy = "seed", sha256 = "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356", template = "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356" }
-".claude/skills/yj-arch-core/SKILL.md" = { policy = "managed", sha256 = "f5123767a3079e6c64c7bfab34d39f8fe9270dc1e9e7cc0b298fcb59d8ba5552" }
+".claude/skills/yj-arch-core/SKILL.md" = { policy = "managed", sha256 = "b9fb0bc6cc8e30d12e9a9182d402fe16ba2fff2fd6d1f3eea55a1042e6abf084" }
 ".claude/skills/yj-backend-msa/SKILL.md" = { policy = "managed", sha256 = "61cb23a63c0486ac742609eda4578e9e1c420e68bf67ff25e10b50fe42cbd808" }
 ".claude/skills/yj-frontend/SKILL.md" = { policy = "managed", sha256 = "dca78e70bfb0d1d001a972ed88f888478ca980a2e7ba4da95d86648591b5fc40" }
 ".claude/skills/yj-proto/SKILL.md" = { policy = "managed", sha256 = "73f47988e8b4330d265e634e85b38cb74d08405237aa7acb7011fbcf5127bcef" }
@@ -26,19 +26,19 @@ languages = ["go"]
 "CLAUDE.md" = { policy = "managed", sha256 = "336cc4fbf19beaada7ccf9986414fa91851a8d7a07dfb3ccbe800a69eed0ab49" }
 "Makefile" = { policy = "managed", sha256 = "424693958f0977133f8922e5c8dbe94e7b2446df416adde82c7c5c85098132f7" }
 "make.ps1" = { policy = "managed", sha256 = "244008b2ab2614843b962a1db92f704081edb9a659f17edf3a2fb9bb032cf3b6" }
-"tools/builder/GUIDE.md" = { policy = "managed", sha256 = "5c0522c8bdaf9d2cbb1a23d58b948feb7cc068b8fded64c263184488540e20cf" }
+"tools/builder/GUIDE.md" = { policy = "managed", sha256 = "dd9eee1bf6c228c6a724c2738eabf0bdad2339fa5bbff791a965c04391def9e4" }
 "tools/builder/backend-msa/builder.ps1" = { policy = "seed", sha256 = "0db18c7509dfecf895a7507ffdefdf9ebbf67ee2edfe1d03dbec59af6d3e403f", template = "58e5033a085cb90bddeb13474c13be875cf141d478e8e71f1f33f500561bff00" }
 "tools/builder/backend-msa/builder.sh" = { policy = "seed", sha256 = "57e58150dc4d6b6ba59fda0312800cf1e5ba504e8de9479c18d3dbb4f7f8bff8", template = "d89044cc026a2940a63191443d4ae2d9e716f3d0f86eec530402b59cba56f992" }
 "tools/builder/frontend/builder.ps1" = { policy = "seed", sha256 = "6d8e9b26db4cf7b9051b70a85a93da2ea486bdf678a296e0be814a8f69cf018f", template = "6d8e9b26db4cf7b9051b70a85a93da2ea486bdf678a296e0be814a8f69cf018f" }
 "tools/builder/frontend/builder.sh" = { policy = "seed", sha256 = "7761343f62e430cc7e6b512620897d63fdbcf8338ac21304ef7dd83e0697e376", template = "7761343f62e430cc7e6b512620897d63fdbcf8338ac21304ef7dd83e0697e376" }
 "tools/builder/proto/builder.ps1" = { policy = "seed", sha256 = "46f9bc1c4c152a651be7e23cb25eb3aca29709761e77f3bcd5e89741583ffe52", template = "46f9bc1c4c152a651be7e23cb25eb3aca29709761e77f3bcd5e89741583ffe52" }
 "tools/builder/proto/builder.sh" = { policy = "seed", sha256 = "8123ea2b60c2faedccffd4a08917013d9626ae875f3f1d0e387a6c8d7b6d9fee", template = "8123ea2b60c2faedccffd4a08917013d9626ae875f3f1d0e387a6c8d7b6d9fee" }
-"tools/deployer/GUIDE.md" = { policy = "managed", sha256 = "c8d5330342fb23cb989cd5761c0d3dc2de60b051ff7cd5a5ccadcc8a9e207009" }
+"tools/deployer/GUIDE.md" = { policy = "managed", sha256 = "12e8e664d7205f38b31f871bd3f32ff9621d975a087e6c98090ef1ec89e285bb" }
 "tools/deployer/backend-msa/deployer.ps1" = { policy = "seed", sha256 = "1fc48645fd5147cd9365234d96cf97b97987a8a3b7b284d1371cff7c2ba92aad", template = "87348fda5e65cafc1f76dea6039c3659945da98c1b4c76851b0503bce1cd197b" }
 "tools/deployer/backend-msa/deployer.sh" = { policy = "seed", sha256 = "803827b5abf40138d7a62c80ce1db45c175c5326b2b7cc19980f4f423e877143", template = "be23a92b50c961ef9fa5b08bc902abb0d72748acc8da025b13c3b356ee989f2d" }
 "tools/deployer/frontend/deployer.ps1" = { policy = "seed", sha256 = "11596a5bfa1414ca232a4d423042c24044b6fc41a34208d4d054cf806e209279", template = "caf526362869d6411a5725ea030f52081d6a54fa7a6ccd71f6ad59becec44eda" }
 "tools/deployer/frontend/deployer.sh" = { policy = "seed", sha256 = "854506deaa932c148fa56ecd36abc7cc217a9fd72fe3e78408b9ee434fb7115f", template = "dff786d4f64063df375c94b83cfd75e212d950895fe377482b2eaa2476257541" }
-"tools/runner/GUIDE.md" = { policy = "managed", sha256 = "66398891ef1e34d4ad96b705229e751536cdc2100538b5bacfd5b2764094484f" }
+"tools/runner/GUIDE.md" = { policy = "managed", sha256 = "dd3803138596117e175482c16e9109ec73093ab11fc16369cd5712e218dd9553" }
 "tools/runner/backend-msa/runner.ps1" = { policy = "seed", sha256 = "bc80fb674ab94bbdca6a69867d9485822b45d67f8b9dfda8b77e871fd7dc4333", template = "7adb62f42cfc5d1d3f910fc18f04352c04f553b9af4ea94089574370e670d502" }
 "tools/runner/backend-msa/runner.sh" = { policy = "seed", sha256 = "fc1c341496d2568238d9faac52ee1cc87ce78c11292e1fcf30edf1346af2d19a", template = "b5be8996c3b3c7b6944c5ff0175b395a28b3c9b965773fd36eedd32448ec3107" }
 "tools/runner/frontend/runner.ps1" = { policy = "seed", sha256 = "d904c73ab413784a1d77d16f780b11a48f322a4899b6115cf67ca6294f54f54f", template = "0c845424b4a34c122ead7eccdd48a94b4d2f949c6d2bddfe206b7f48841a0743" }
