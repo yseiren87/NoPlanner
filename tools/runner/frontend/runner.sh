@@ -7,6 +7,10 @@
 # This is the entry point `make frontend` calls. It does not have to stay a
 # single file: add helper scripts next to it and call them from here.
 #
+# User input (see GUIDE.md): if this script ever needs answers from the user, run the
+# checks first, ask everything up front, show the plan, confirm once, then run with no
+# further prompts. Arguments come before prompts; never prompt when stdin is not a terminal.
+#
 # Usage: tools/runner/frontend/runner.sh [service]
 set -uo pipefail
 
@@ -30,15 +34,12 @@ list_services() {
   local dir
   for dir in "$PLATFORM_DIR"/*/; do
     [ -d "$dir" ] || continue
-    case "$(basename "$dir")" in
-      proto) continue ;;
-    esac
     basename "$dir"
   done
 }
 
 if [ -n "$NAME" ]; then
-  if [ "$NAME" = "proto" ] || [ ! -d "$PLATFORM_DIR/$NAME" ]; then
+  if [ ! -d "$PLATFORM_DIR/$NAME" ]; then
     echo "unknown service: $NAME (expected $PLATFORM_DIR/$NAME)" >&2
     exit 1
   fi

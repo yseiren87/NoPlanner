@@ -6,6 +6,10 @@
 # This is the entry point `make.ps1 backend-msa` calls. It does not have to stay
 # a single file: add helper scripts next to it and call them from here.
 #
+# User input (see GUIDE.md): if this script ever needs answers from the user, run the
+# checks first, ask everything up front, show the plan, confirm once, then run with no
+# further prompts. Arguments come before prompts; never prompt when stdin is not a terminal.
+#
 # Usage: tools/runner/backend-msa/runner.ps1 [service]
 param(
     [string]$Service = "",
@@ -47,13 +51,13 @@ if ($Child) {
 }
 
 if ($Service) {
-    if ($Service -eq "proto" -or -not (Test-Path (Join-Path $PlatformDir $Service) -PathType Container)) {
+    if (-not (Test-Path (Join-Path $PlatformDir $Service) -PathType Container)) {
         Write-Host "unknown service: $Service (expected $PlatformDir\$Service)"
         exit 1
     }
     $services = @($Service)
 } else {
-    $services = @(Get-ChildItem -Path $PlatformDir -Directory | Where-Object { $_.Name -ne "proto" } |
+    $services = @(Get-ChildItem -Path $PlatformDir -Directory |
         Sort-Object Name | ForEach-Object { $_.Name })
 }
 

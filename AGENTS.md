@@ -49,7 +49,7 @@ When creating, modifying, reviewing, or refactoring code:
 2. Load **exactly one** matching platform skill for the folder being edited (the first matching row wins):
 
 | Path | Skill |
-|------|------|
+|---|---|
 | `backend-msa/**` | `yj-backend-msa` |
 | `frontend/**` | `yj-frontend` |
 | `proto/**` | `yj-proto` |
@@ -67,21 +67,21 @@ Skills are installed under:
 
 <!-- yjcli:layout -->
 | Path | Role |
-|------|------|
+|---|---|
 | `AGENTS.md` | Agent / contributor guide (this file) — source of truth |
-| `.gitignore` | Ignore rules (the `# >>> yjcli` block is managed) |
-| `.yjcli/manifest.toml` | yjcli selection state — do not edit by hand |
+| `.gitignore` | Ignore rules (the `# >>> yjcli:managed` block is managed) |
+| `.yjcli/manifest.toml` | yjcli configuration — do not edit by hand |
 | `.yjcli/skills/<skill>.md` | (optional) project-specific rules appended to that rendered skill |
 | `CLAUDE.md` | Claude Code entry — imports `AGENTS.md` (`@AGENTS.md`); do not edit |
 | `.claude/skills/` | Claude Code skills (rendered by yjcli) |
 | `.claude/settings.json` | Claude Code settings |
-| `backend-msa/` | gRPC microservices sharing one proto contract — skill `yj-backend-msa` |
+| `backend-msa/` | gRPC microservices sharing the root proto contract — skill `yj-backend-msa` |
 | `frontend/` | Vite + React + TS web apps — skill `yj-frontend` |
-| `proto/` | Shared gRPC/protobuf contract: `*.proto` schemas and generated libraries in `proto/dist/<lang>/` — skill `yj-proto` |
+| `proto/` | Shared gRPC/protobuf contract: `*.proto` schemas, generated libraries in `proto/dist/<language>/` — skill `yj-proto` |
 | `tools/secrets/<platform>/<service>/` | Per-service env values (`.env.local-dev`, `.env.<environment>`) — committed in plain text |
 | `tools/runner/` | Local run — `GUIDE.md` (managed) + `<platform>/runner.{sh,ps1}` (repository-owned); `make <platform> [NAME=<service>]` |
-| `tools/builder/` | Build — `GUIDE.md` (managed) + `<platform>/builder.{sh,ps1}` (repository-owned); `make <platform>-build-<env>`, `make proto-build` (codegen) |
-| `dist/<platform>/<service>/` | Build output (git-ignored) — input of the deployer |
+| `tools/builder/` | Build — `GUIDE.md` (managed) + `<platform>/builder.{sh,ps1}` (repository-owned); `make <platform>-build-<env>`, `make proto-build` |
+| `dist/<platform>/<service>/` | Build output (git-ignored) — the deployer's input |
 | `tools/deployer/` | Deploy — `GUIDE.md` (managed) + `<platform>/deployer.{sh,ps1}` (repository-owned); `make <platform>-deploy-<env>` |
 <!-- /yjcli:layout -->
 

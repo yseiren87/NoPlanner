@@ -198,7 +198,7 @@ secrets/
 
 # >>> yjcli:managed
 # Managed by yjcli — regenerated on every run.
-# Env values are committed in plain text (private repos only).
+# Env values are committed in plain text (private repositories only).
 !tools/secrets/
 !tools/secrets/**
 # Build output (tools/builder).

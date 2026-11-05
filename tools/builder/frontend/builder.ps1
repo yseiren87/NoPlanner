@@ -6,7 +6,11 @@
 # This is the entry point `make.ps1 frontend-build-<env>` calls. It does not
 # have to stay a single file: add helper scripts next to it and call them from here.
 #
-# Usage: tools/builder/frontend/builder.ps1 <development|production> [service]
+# User input (see GUIDE.md): if this script ever needs answers from the user, run the
+# checks first, ask everything up front, show the plan, confirm once, then run with no
+# further prompts. Arguments come before prompts; never prompt when stdin is not a terminal.
+#
+# Usage: tools/builder/frontend/builder.ps1 <environment> [service]
 param(
     [string]$Environment = "",
     [string]$Service = ""
@@ -38,8 +42,11 @@ function Invoke-BuildOne([string]$Name) {
 }
 # -----------------------------------------------------------------------------
 
-if ($Environment -notin @("development", "production")) {
-    Write-Host "usage: builder.ps1 <development|production> [service]"
+# Any environment name: development and production come with every service; add more
+# (staging, test, ...) by creating tools\secrets\<platform>\<service>\.env.<name>.
+# local-dev is for local runs (tools/runner) only.
+if (-not $Environment -or $Environment -eq "local-dev" -or $Environment -notmatch '^[A-Za-z0-9_-]+$') {
+    Write-Host "usage: builder.ps1 <environment> [service]   (development, production, staging, ...)"
     exit 1
 }
 
@@ -57,6 +64,16 @@ if ($services.Count -eq 0) {
     Write-Host "no services under $PlatformDir"
     exit 1
 }
+
+# The environment must exist for every service before anything is built.
+$missing = $false
+foreach ($name in $services) {
+    if (-not (Test-Path (Join-Path (Join-Path $SecretsDir $name) ".env.$Environment"))) {
+        Write-Host "[build] $Platform/${name}: missing tools/secrets/$Platform/$name/.env.$Environment"
+        $missing = $true
+    }
+}
+if ($missing) { exit 1 }
 
 # package.json / pyproject.toml version, else $env:VERSION, else "unknown".
 function Resolve-Version([string]$Dir) {

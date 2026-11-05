@@ -7,7 +7,11 @@
 # This is the entry point `make.ps1 frontend-deploy-<env>` calls. It does not
 # have to stay a single file: add helper scripts next to it and call them from here.
 #
-# Usage: tools/deployer/frontend/deployer.ps1 <development|production> [service]
+# User input (see GUIDE.md): if this script ever needs answers from the user, run the
+# checks first, ask everything up front, show the plan, confirm once, then run with no
+# further prompts. Arguments come before prompts; never prompt when stdin is not a terminal.
+#
+# Usage: tools/deployer/frontend/deployer.ps1 <environment> [service]
 param(
     [string]$Environment = "",
     [string]$Service = ""
@@ -40,19 +44,22 @@ function Invoke-DeployOne([string]$Name) {
 }
 # -----------------------------------------------------------------------------
 
-if ($Environment -notin @("development", "production")) {
-    Write-Host "usage: deployer.ps1 <development|production> [service]"
+# Any environment name: development and production come with every service; add more
+# (staging, test, ...) by creating tools\secrets\<platform>\<service>\.env.<name>.
+# local-dev is for local runs (tools/runner) only.
+if (-not $Environment -or $Environment -eq "local-dev" -or $Environment -notmatch '^[A-Za-z0-9_-]+$') {
+    Write-Host "usage: deployer.ps1 <environment> [service]   (development, production, staging, ...)"
     exit 1
 }
 
 if ($Service) {
-    if ($Service -eq "proto" -or -not (Test-Path (Join-Path $PlatformDir $Service) -PathType Container)) {
+    if (-not (Test-Path (Join-Path $PlatformDir $Service) -PathType Container)) {
         Write-Host "unknown service: $Service (expected $PlatformDir\$Service)"
         exit 1
     }
     $services = @($Service)
 } else {
-    $services = @(Get-ChildItem -Path $PlatformDir -Directory | Where-Object { $_.Name -ne "proto" } |
+    $services = @(Get-ChildItem -Path $PlatformDir -Directory |
         Sort-Object Name | ForEach-Object { $_.Name })
 }
 if ($services.Count -eq 0) {

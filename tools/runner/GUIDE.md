@@ -32,11 +32,25 @@ Current services:
 
 ## Requirements
 
-- Local runs always use `.env.local-dev` — never `.env.development` / `.env.production`, and never hardcode `HOST` / `PORT`.
+- Local runs with `tools/secrets/` always use `.env.local-dev` — never `.env.development` / `.env.production`, and never hardcode `HOST` / `PORT`.
 - `runner.sh` and `runner.ps1` behave the same.
 - `runner.sh` works on macOS's bash 3.2: no `wait -n`, no associative arrays, guard empty arrays with `${arr[@]+"${arr[@]}"}`.
 - `runner.ps1` stays ASCII-only so Windows PowerShell 5.1 reads it correctly.
 
+## User input
+
+When a script needs anything from the user (a target, a version, a confirmation, a message), it asks for everything up front and acts only at the end:
+
+1. Checks first: run what needs no input (tools, files, `BUILD_INFO`, credentials) right away and stop with a clear message before asking anything.
+2. Collect every input: ask all questions in a row and keep the answers in variables. Nothing is changed while asking. Re-ask on an invalid answer instead of exiting.
+3. Show the plan: one screen with every answer and what will happen (services, environment, target, irreversible steps).
+4. Confirm once: a single `y` (anything else quits without changes).
+5. Run: execute every step with the stored values and no further prompts. On failure stop, undo what can be undone, and say what is left.
+
+Arguments and env vars come before prompts: a value given on the command line is not asked again, and when stdin is not a terminal (CI) the script never prompts — it fails listing the missing values instead.
+
 ## More than one script
 
 One entry script per platform is a starting point, not a limit: when a platform needs more (per-service launch scripts, a shared helper, a watcher), add files under `tools/runner/<platform>/` or `tools/runner/` and call them from the entry script instead of growing one file indefinitely. Keep the entry script name — `make` calls it.
+
+Everything under `tools/runner/` belongs to this plugin: removing the plugin in yjcli deletes `tools/runner/`, and removing a platform deletes `tools/runner/<platform>/` — files you added there included.

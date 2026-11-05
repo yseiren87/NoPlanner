@@ -16,7 +16,7 @@ function Show-Help {
     Write-Host "  make.ps1 <platform>-build-<env> [NAME=<service>]   # build into dist/ (tools/builder)"
     Write-Host "  make.ps1 proto-build [PROTO_LANG=<language>]       # generate proto/dist/<language>/ (tools/builder/proto)"
     Write-Host "  make.ps1 <platform>-deploy-<env> [NAME=<service>]  # deploy dist/ (tools/deployer)"
-    Write-Host "  <env>: development | production"
+    Write-Host "  <env>: development | production | any .env.<env> under tools/secrets/<platform>/<service>/"
     Write-Host ""
     Write-Host "Platforms: $($Platforms -join ' ')"
 }
@@ -40,10 +40,10 @@ if ($Target -eq "proto-build") {
     if ($Lang) { & $script $Lang } else { & $script }
     exit $LASTEXITCODE
 }
-if ($Target -match "^(.+)-build-(development|production)$") {
+if ($Target -match "^(.+)-build-([A-Za-z0-9_-]+)$") {
     $tool = "builder"; $platform = $Matches[1]; $scriptArgs = @($Matches[2])
 }
-if ($Target -match "^(.+)-deploy-(development|production)$") {
+if ($Target -match "^(.+)-deploy-([A-Za-z0-9_-]+)$") {
     $tool = "deployer"; $platform = $Matches[1]; $scriptArgs = @($Matches[2])
 }
 if (-not $tool -and $Platforms -contains $Target) {

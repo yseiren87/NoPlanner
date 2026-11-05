@@ -8,7 +8,11 @@
 # This is the entry point `make frontend-deploy-<env>` calls. It does not have
 # to stay a single file: add helper scripts next to it and call them from here.
 #
-# Usage: tools/deployer/frontend/deployer.sh <development|production> [service]
+# User input (see GUIDE.md): if this script ever needs answers from the user, run the
+# checks first, ask everything up front, show the plan, confirm once, then run with no
+# further prompts. Arguments come before prompts; never prompt when stdin is not a terminal.
+#
+# Usage: tools/deployer/frontend/deployer.sh <environment> [service]
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -38,17 +42,19 @@ deploy_one() {
 # -----------------------------------------------------------------------------
 
 usage() {
-  echo "usage: $0 <development|production> [service]" >&2
+  echo "usage: $0 <environment> [service]   (development, production, staging, ...)" >&2
   exit 1
 }
 
+# Any environment name: development and production come with every service; add more
+# (staging, test, ...) by creating tools/secrets/<platform>/<service>/.env.<name>.
+# local-dev is for local runs (tools/runner) only.
 case "$ENVIRONMENT" in
-  development | production) ;;
-  *) usage ;;
+  "" | local-dev | *[!A-Za-z0-9_-]*) usage ;;
 esac
 
 if [ -n "$NAME" ]; then
-  if [ "$NAME" = "proto" ] || [ ! -d "$PLATFORM_DIR/$NAME" ]; then
+  if [ ! -d "$PLATFORM_DIR/$NAME" ]; then
     echo "unknown service: $NAME (expected $PLATFORM_DIR/$NAME)" >&2
     exit 1
   fi
@@ -57,9 +63,6 @@ else
   services=()
   for dir in "$PLATFORM_DIR"/*/; do
     [ -d "$dir" ] || continue
-    case "$(basename "$dir")" in
-      proto) continue ;;
-    esac
     services+=("$(basename "$dir")")
   done
 fi

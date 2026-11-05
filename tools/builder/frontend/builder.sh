@@ -7,7 +7,11 @@
 # This is the entry point `make frontend-build-<env>` calls. It does not have
 # to stay a single file: add helper scripts next to it and call them from here.
 #
-# Usage: tools/builder/frontend/builder.sh <development|production> [service]
+# User input (see GUIDE.md): if this script ever needs answers from the user, run the
+# checks first, ask everything up front, show the plan, confirm once, then run with no
+# further prompts. Arguments come before prompts; never prompt when stdin is not a terminal.
+#
+# Usage: tools/builder/frontend/builder.sh <environment> [service]
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -36,13 +40,15 @@ build_one() {
 # -----------------------------------------------------------------------------
 
 usage() {
-  echo "usage: $0 <development|production> [service]" >&2
+  echo "usage: $0 <environment> [service]   (development, production, staging, ...)" >&2
   exit 1
 }
 
+# Any environment name: development and production come with every service; add more
+# (staging, test, ...) by creating tools/secrets/<platform>/<service>/.env.<name>.
+# local-dev is for local runs (tools/runner) only.
 case "$ENVIRONMENT" in
-  development | production) ;;
-  *) usage ;;
+  "" | local-dev | *[!A-Za-z0-9_-]*) usage ;;
 esac
 
 if [ -n "$NAME" ]; then
@@ -62,6 +68,16 @@ if [ "${#services[@]}" -eq 0 ]; then
   echo "no services under $PLATFORM_DIR" >&2
   exit 1
 fi
+
+# The environment must exist for every service before anything is built.
+missing=0
+for name in "${services[@]}"; do
+  if [ ! -f "$SECRETS_DIR/$name/.env.$ENVIRONMENT" ]; then
+    echo "[build] $PLATFORM/$name: missing tools/secrets/$PLATFORM/$name/.env.$ENVIRONMENT" >&2
+    missing=1
+  fi
+done
+[ "$missing" -eq 0 ] || exit 1
 
 # package.json / pyproject.toml version, else $VERSION, else "unknown".
 resolve_version() {

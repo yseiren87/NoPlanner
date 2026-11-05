@@ -42,7 +42,6 @@ proto/                # yj-proto
 - Every service root has `.env.examples` — the committed field contract. Format every entry as one comment line followed by one empty `FIELD=` line, with one blank line between entries.
 - Field sets come from the platform's env kind:
   - `listen`: `backend-msa` (PORT 8080), `frontend` (PORT 5173)
-  - ``: `proto`
 - `HOST`/`PORT` are required for `listen`. For `worker` they are optional — add them only when the process really listens. `app` services need NAME/VERSION only.
 - Do not invent fields outside the contract; add a field to `.env.examples` first, then wherever its values are kept.
 - Never commit a plain `.env`, and do not use Vite's `.env.local` convention unless a thin loader maps it to this structure.
@@ -52,7 +51,7 @@ proto/                # yj-proto
 ### Secrets (`tools/secrets/`)
 
 - Env values live only in `tools/secrets/<platform>/<service>/.env.<environment>`. Services keep `.env.examples` only — never create `.env*` value files inside a service folder.
-- `.env.local-dev` is required. New services also start with `.env.development` and `.env.production`; remove unused ones or add others (`.env.staging`, `.env.test`, …) following the `.env.<environment>` naming pattern.
+- `.env.local-dev` is required (local runs). New services also start with `.env.development` and `.env.production`; remove unused ones or add others (`.env.staging`, `.env.test`, …) following the `.env.<environment>` naming pattern. An added environment works with `make <platform>-build-<environment>` / `make <platform>-deploy-<environment>` once every service of that platform has its file.
 - These files are **committed in plain text** — the repository must stay private. Do not copy their values into code, docs, logs or commit messages.
 - Value files list populated `FIELD=value` lines consecutively, without field-description comments or separator blank lines. Values are literal: no quotes, no `export`, no multi-line values (the `docker --env-file` format).
 - When adding a field, add it to the service's `.env.examples` and to every `.env.<environment>` file of that service.
@@ -61,22 +60,26 @@ proto/                # yj-proto
 
 - `make <platform> [NAME=<service>]` (`./make.ps1` on Windows) calls `tools/runner/<platform>/runner.sh` / `runner.ps1`.
 - Follow `tools/runner/GUIDE.md` (managed by yjcli — do not edit). The scripts are repository-owned and must follow that guide (service discovery, `.env.local-dev`, concurrency, Ctrl+C); the per-service command lives in `run_one` / `Invoke-RunOne`. Keep `.sh` and `.ps1` equivalent, and re-check the scripts against the guide when yjcli updates it.
-- Local runs always use `.env.local-dev` — do not hardcode HOST/PORT in scripts.
+- Local runs use `.env.local-dev` on platforms with `tools/secrets/` (platforms without it get env values the project's own way) — never hardcode HOST/PORT in scripts.
 
 ### Builder (`tools/builder/`)
 
-- `make <platform>-build-<env> [NAME=<service>]` (`./make.ps1` on Windows) calls `tools/builder/<platform>/builder.sh` / `builder.ps1` with `<env>` = `development` | `production`.
+- `make <platform>-build-<env> [NAME=<service>]` (`./make.ps1` on Windows) calls `tools/builder/<platform>/builder.sh` / `builder.ps1` with `<env>` = `development`, `production` or any environment added as `tools/secrets/<platform>/<service>/.env.<env>`.
 - Follow `tools/builder/GUIDE.md` (managed by yjcli — do not edit). Builds go to `dist/<platform>/<service>/` at the repository root, runnable on their own and without env value files. The per-service build lives in `build_one` / `Invoke-BuildOne` (proto codegen in `gen_<language>`). Keep `.sh` and `.ps1` equivalent, and re-check the scripts against the guide when yjcli updates it.
 
 ### Deployer (`tools/deployer/`)
 
 - `make <platform>-deploy-<env> [NAME=<service>]` (`./make.ps1` on Windows) calls `tools/deployer/<platform>/deployer.sh` / `deployer.ps1`. It never builds.
-- Follow `tools/deployer/GUIDE.md` (managed by yjcli — do not edit). Input is `dist/<platform>/<service>/` only; env values are injected at run time (`docker run --env-file tools/secrets/<platform>/<service>/.env.<env>`), never baked into an image. Dockerfiles live under `tools/deployer/<platform>/`. The per-service deploy lives in `deploy_one` / `Invoke-DeployOne`. Keep `.sh` and `.ps1` equivalent, and re-check the scripts against the guide when yjcli updates it.
+- Follow `tools/deployer/GUIDE.md` (managed by yjcli — do not edit). Input is `dist/<platform>/<service>/` only; env values are injected at run time (with `tools/secrets/`: `docker run --env-file tools/secrets/<platform>/<service>/.env.<env>`), never baked into an image. Dockerfiles live under `tools/deployer/<platform>/`. The per-service deploy lives in `deploy_one` / `Invoke-DeployOne`. Keep `.sh` and `.ps1` equivalent, and re-check the scripts against the guide when yjcli updates it.
+
+### Script input (every tool)
+
+- If a tool script needs answers from the user, follow the User input rule in its `GUIDE.md`: checks first, ask everything up front and keep the answers in variables, show the plan, confirm once, then run with no further prompts (arguments before prompts; never prompt when stdin is not a terminal).
 
 ## Skill routing
 
 | Path | Platform skill |
-|------|------|
+|---|---|
 | `backend-msa/**` | `yj-backend-msa` |
 | `frontend/**` | `yj-frontend` |
 | `proto/**` | `yj-proto` |
